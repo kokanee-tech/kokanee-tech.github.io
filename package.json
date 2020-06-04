@@ -1,0 +1,19 @@
+{
+  "name": "kokanee-tech",
+  "version": "0.0.1",
+  "description": "small web demos",
+  "main": "index.md",
+  "type": "module",
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kokanee-tech/kokanee-tech.github.io.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/kokanee-tech/kokanee-tech.github.io/issues"
+  },
+  "homepage": "https://github.com/kokanee-tech/kokanee-tech.github.io#readme"
+}
