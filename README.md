@@ -1,3 +1,7 @@
 # kokanee-tech.github.io
 
-Code repository for the small web demos [here](https://kokanee-tech.github.io/).
+A repository of small web demos.
+
+### [NerdyBird](nerdybird)
+
+Demo simulation inspired by a [vintage toy helicopter](https://en.wikipedia.org/wiki/VertiBird).
