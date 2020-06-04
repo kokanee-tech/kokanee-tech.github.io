@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>NerdyBird</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <script>
+      try {
+        new Function("path", "import(path);")("./index.js");
+      } catch (err) {
+        console.error("Import failed: " + err.message);
+        window.alert("Unsupported browser. Please try Google Chrome.");
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Use id "main-canvas" by convention -->
+    <canvas id="main-canvas" width="800" height="600">opps</canvas>
+  </body>
+</html>
