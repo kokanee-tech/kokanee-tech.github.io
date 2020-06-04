@@ -1,3 +1,3 @@
 ### [NerdyBird](demo/nerdybird)
 
-Practise your [toy helicopter](https://en.wikipedia.org/wiki/VertiBird) flying skills.
+Hone your [toy helicopter](https://en.wikipedia.org/wiki/VertiBird) flying skills.
