@@ -1,9 +1,23 @@
 import AudioSupport from "../../src/AudioSupport.js";
 
 const MAIN_CANVAS_ID = "main-canvas"; // by convention
+const ERROR_NO_GAMEPAD = `No active gamepad detected. Support is currently limited to:
+  - Chrome v83+ on macOS v10.11.5+
+  - Xbox One Wireless Controller`;
 
 const doStuff = async () => {
   const canvas = document.getElementById(MAIN_CANVAS_ID);
+
+  function isGamepadConnected() {
+    const gamepads = navigator.getGamepads();
+    if (gamepads.length) {
+      const gamepad = gamepads[0];
+      if (gamepad) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   function update() {
     try {
@@ -32,6 +46,11 @@ const doStuff = async () => {
       console.error("Execution failed: " + err.message);
       window.alert("Opps, something went wrong.");
     }
+  }
+
+  if (!isGamepadConnected()) {
+    alert(ERROR_NO_GAMEPAD);
+    return;
   }
 
   update();
