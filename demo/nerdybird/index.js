@@ -2,12 +2,20 @@ import AudioSupport from "../../src/AudioSupport.js";
 
 const MAIN_CANVAS_ID = "main-canvas"; // by convention
 const ERROR_NO_GAMEPAD = `No active gamepad detected. Support is currently limited to:
-  - Chrome v83+ on macOS v10.11.5+
-  - Xbox One Wireless Controller`;
+  Chrome (v83)
+  macOS (v10.11.5)
+  Xbox One Wireless Controller.
+If you have one and it's paired, press buttons to wake it up.`;
 
 const doStuff = async () => {
   const canvas = document.getElementById(MAIN_CANVAS_ID);
 
+  // PROBLEMS:
+  //   - It may take a few seconds to connect
+  //   - The user may need to press buttons to wake it up.
+  // Recommend that we poll in the game loop instead, and
+  // drive the error message based on a "conf" (a.k.a. "debounce")
+  // of several seconds.
   function isGamepadConnected() {
     const gamepads = navigator.getGamepads();
     if (gamepads.length) {
