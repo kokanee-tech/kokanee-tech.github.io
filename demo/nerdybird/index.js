@@ -16,6 +16,13 @@ const doStuff = async () => {
   // Recommend that we poll in the game loop instead, and
   // drive the error message based on a "conf" (a.k.a. "debounce")
   // of several seconds.
+  //
+  // From https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API:
+  // In Firefox, gamepads are only exposed to a page when the user
+  // interacts with one with the page visible. This helps prevent
+  // gamepads being used for fingerprinting the user. Once one gamepad
+  // has been interacted with, other gamepads that are connected will
+  // automatically be visible.
   function isGamepadConnected() {
     const gamepads = navigator.getGamepads();
     if (gamepads.length) {
