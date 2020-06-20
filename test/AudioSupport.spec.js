@@ -30,6 +30,9 @@ describe("AudioSupport", () => {
           state: "running",
         };
 
+        // audioReady() is an async function and
+        // typically we would 'await' its return value, but here
+        // we are only checking a few mock function calls.
         new AudioSupport(mockAudioContext).audioReady(mockElement);
       });
 
@@ -47,6 +50,9 @@ describe("AudioSupport", () => {
           resume: Mock.fn().mockName("resume"),
         };
 
+        // audioReady() is an async function and
+        // typically we would 'await' its return value, but here
+        // we are only checking a few mock function calls.
         new AudioSupport(mockAudioContext).audioReady(mockElement);
       });
 
