@@ -4,18 +4,20 @@ import Simulation from "./Simulation.js";
 
 const MAIN_CANVAS_ID = "main-canvas"; // by convention
 
-new Platform(window).run(MAIN_CANVAS_ID, (dependencies) => {
+new Platform(window).run(MAIN_CANVAS_ID, async (dependencies) => {
   const textDisplay = new TextDisplay(dependencies);
   textDisplay.start();
 
   const simulation = new Simulation(dependencies);
-  simulation.displayPrerequisites(textDisplay);
+  await simulation.displayPrerequisites(textDisplay);
   simulation.start();
 });
 
 //--------------
 // TODO:
-// - start implementations of TextDisplay and Simulation
+// - gamepads becomes stale and thus we get stuck in the endless loop
+// - better name for displayPrerequisites
+// - finish implementations of TextDisplay and Simulation
 // - write spec for timer.sleep
 // - finish spec for Platform
 // - audio

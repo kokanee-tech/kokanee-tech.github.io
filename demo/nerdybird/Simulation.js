@@ -29,7 +29,7 @@ export default class Simulation {
 
     if (audioContext.state !== "running") {
       textDisplay.message = MESSAGE_CLICK_TO_START;
-      await uiElement.userClick();
+      await uiElement.forUserClick();
       textDisplay.message = "";
       await audioContext.resume();
     }
@@ -37,7 +37,7 @@ export default class Simulation {
     textDisplay.title = "";
   }
 
-  async start() {
+  start() {
     const { audioContext, gamepads, timer, visualContext } = this.deps;
 
     /*
@@ -61,7 +61,11 @@ export default class Simulation {
       helicopter.drawSelf(visualContext);
       */
 
-      visualContext.strokeRect(-1, -1, 2, 2);
+      visualContext.moveTo(-2, -2);
+      visualContext.lineTo(2, -2);
+      visualContext.lineTo(2, 2);
+      visualContext.lineTo(-2, 2);
+      visualContext.lineTo(-2, -2);
 
       visualContext.restore();
       visualContext.stroke();

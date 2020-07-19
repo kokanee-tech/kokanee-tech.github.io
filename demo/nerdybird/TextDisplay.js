@@ -12,6 +12,8 @@ export default class TextDisplay {
 
     timer.forEachAnimationFrame(() => {
       // draw this.title and this.message onto visualContext
+      visualContext.fillText(this.title, 10, 10);
+      visualContext.fillText(this.message, 10, 50);
     });
   }
 }
