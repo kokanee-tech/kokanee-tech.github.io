@@ -61,7 +61,7 @@ export default class Simulation {
       helicopter.drawSelf(visualContext);
       */
 
-      visualContext.drawRect(-10, -10, 20, 20);
+      visualContext.strokeRect(-1, -1, 2, 2);
 
       visualContext.restore();
       visualContext.stroke();
