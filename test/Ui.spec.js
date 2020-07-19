@@ -4,54 +4,77 @@ import Ui from "../src/Ui.js";
 
 describe("Ui", () => {
   describe("constructor", () => {
-    it("should save the DOM element", () => {
-      const domElement = {};
-      expect(new Ui(domElement).domElement).toBe(domElement);
+    it("should save the canvas element", () => {
+      const canvasElement = {};
+      expect(new Ui(canvasElement).canvasElement).toBe(canvasElement);
+    });
+  });
+
+  describe("autoSize", () => {
+    const WINDOW_INNER_WIDTH = 7;
+    const WINDOW_INNER_HEIGHT = 3;
+
+    let mockCanvasElement;
+
+    beforeEach(() => {
+      mockCanvasElement = {};
+      new Ui(mockCanvasElement).autoSize({
+        innerWidth: WINDOW_INNER_WIDTH,
+        innerHeight: WINDOW_INNER_HEIGHT,
+      });
+    });
+
+    it("should set canvas width to window inner width", () => {
+      expect(mockCanvasElement.width).toBe(WINDOW_INNER_WIDTH);
+    });
+
+    it("should set canvas height to window inner height", () => {
+      expect(mockCanvasElement.height).toBe(WINDOW_INNER_HEIGHT);
     });
   });
 
   describe("forUserClick", () => {
-    let mockDomElement;
+    let mockCanvasElement;
 
     beforeEach(() => {
-      mockDomElement = {
+      mockCanvasElement = {
         removeEventListener: Mock.fn().mockName("removeEventListener"),
       };
     });
 
     describe("without click event", () => {
       beforeEach(() => {
-        mockDomElement.addEventListener = Mock.fn().mockName(
+        mockCanvasElement.addEventListener = Mock.fn().mockName(
           "addEventListener"
         );
 
-        new Ui(mockDomElement).forUserClick();
+        new Ui(mockCanvasElement).forUserClick();
       });
 
       it("should invoke addEventListener once", () => {
-        expect(mockDomElement.addEventListener).toHaveBeenCalledTimes(1);
+        expect(mockCanvasElement.addEventListener).toHaveBeenCalledTimes(1);
       });
 
       it("should not invoke removeEventListener", () => {
-        expect(mockDomElement.removeEventListener).not.toHaveBeenCalled();
+        expect(mockCanvasElement.removeEventListener).not.toHaveBeenCalled();
       });
     });
 
     describe("with click event", () => {
       beforeEach(() => {
-        mockDomElement.addEventListener = Mock.fn((type, listener) =>
+        mockCanvasElement.addEventListener = Mock.fn((type, listener) =>
           listener()
         ).mockName("addEventListener");
 
-        new Ui(mockDomElement).forUserClick();
+        new Ui(mockCanvasElement).forUserClick();
       });
 
       it("should invoke addEventListener once", () => {
-        expect(mockDomElement.addEventListener).toHaveBeenCalledTimes(1);
+        expect(mockCanvasElement.addEventListener).toHaveBeenCalledTimes(1);
       });
 
       it("should invoke removeEventListener once", () => {
-        expect(mockDomElement.removeEventListener).toHaveBeenCalledTimes(1);
+        expect(mockCanvasElement.removeEventListener).toHaveBeenCalledTimes(1);
       });
     });
   });
