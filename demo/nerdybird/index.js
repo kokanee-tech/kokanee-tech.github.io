@@ -9,13 +9,13 @@ new Platform(window).run(MAIN_CANVAS_ID, (dependencies) => {
   textDisplay.start();
 
   const simulation = new Simulation(dependencies);
-  simulation.checkPrerequisites(textDisplay);
+  simulation.displayPrerequisites(textDisplay);
   simulation.start();
 });
 
 //--------------
 // TODO:
-// - rename Ui to DomSupport
+// - rename Ui to UiElement
 // - start implementations of TextDisplay and Simulation
 // - finish spec for Platform
 // - audio
