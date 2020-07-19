@@ -2,6 +2,6 @@ import { runAll } from "../src/specish/specish.js";
 import "./specish/index.js";
 import "./Platform.spec.js";
 import "./Timer.spec.js";
-import "./Ui.spec.js";
+import "./UiElement.spec.js";
 
 runAll();

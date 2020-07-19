@@ -15,7 +15,6 @@ new Platform(window).run(MAIN_CANVAS_ID, (dependencies) => {
 
 //--------------
 // TODO:
-// - rename Ui to UiElement
 // - start implementations of TextDisplay and Simulation
 // - finish spec for Platform
 // - audio

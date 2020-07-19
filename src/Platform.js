@@ -1,5 +1,5 @@
 import Timer from "./Timer.js";
-import Ui from "./Ui.js";
+import UiElement from "./UiElement.js";
 
 export default class Platform {
   constructor(mainWindow) {
@@ -10,17 +10,17 @@ export default class Platform {
     try {
       const timer = new Timer(this.mainWindow);
       const mainCanvas = this.mainWindow.document.getElementById(canvasId);
-      const ui = new Ui(mainCanvas);
+      const uiElement = new UiElement(mainCanvas);
       const visualContext = mainCanvas.getContext("2d");
 
       // Automatically resize the canvas
-      timer.forEachAnimationFrame(() => ui.autoSize(this.mainWindow));
+      timer.forEachAnimationFrame(() => uiElement.autoSize(this.mainWindow));
 
       const dependencies = {
         audioContext: new this.mainWindow.AudioContext(),
         gamepads: this.mainWindow.navigator.getGamepads(),
         timer,
-        ui,
+        uiElement,
         visualContext,
       };
 

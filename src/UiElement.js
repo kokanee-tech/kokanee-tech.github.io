@@ -1,6 +1,6 @@
 const EVENT_TYPE_CLICK = "click";
 
-export default class Ui {
+export default class UiElement {
   constructor(canvasElement) {
     this.canvasElement = canvasElement;
   }

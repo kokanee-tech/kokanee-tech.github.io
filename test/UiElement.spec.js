@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from "../src/specish/specish.js";
 import Mock from "../src/specish/Mock.js";
-import Ui from "../src/Ui.js";
+import UiElement from "../src/UiElement.js";
 
-describe("Ui", () => {
+describe("UiElement", () => {
   describe("constructor", () => {
     it("should save the canvas element", () => {
       const canvasElement = {};
-      expect(new Ui(canvasElement).canvasElement).toBe(canvasElement);
+      expect(new UiElement(canvasElement).canvasElement).toBe(canvasElement);
     });
   });
 
@@ -18,7 +18,7 @@ describe("Ui", () => {
 
     beforeEach(() => {
       mockCanvasElement = {};
-      new Ui(mockCanvasElement).autoSize({
+      new UiElement(mockCanvasElement).autoSize({
         innerWidth: WINDOW_INNER_WIDTH,
         innerHeight: WINDOW_INNER_HEIGHT,
       });
@@ -48,7 +48,7 @@ describe("Ui", () => {
           "addEventListener"
         );
 
-        new Ui(mockCanvasElement).forUserClick();
+        new UiElement(mockCanvasElement).forUserClick();
       });
 
       it("should invoke addEventListener once", () => {
@@ -66,7 +66,7 @@ describe("Ui", () => {
           listener()
         ).mockName("addEventListener");
 
-        new Ui(mockCanvasElement).forUserClick();
+        new UiElement(mockCanvasElement).forUserClick();
       });
 
       it("should invoke addEventListener once", () => {
