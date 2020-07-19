@@ -16,6 +16,7 @@ new Platform(window).run(MAIN_CANVAS_ID, (dependencies) => {
 //--------------
 // TODO:
 // - start implementations of TextDisplay and Simulation
+// - write spec for timer.sleep
 // - finish spec for Platform
 // - audio
 //--------------

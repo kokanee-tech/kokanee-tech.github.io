@@ -3,6 +3,12 @@ export default class Timer {
     this.mainWindow = mainWindow;
   }
 
+  sleep(millis) {
+    return new Promise((resolve) => {
+      this.mainWindow.setTimeout(resolve, millis);
+    });
+  }
+
   forEachAnimationFrame(callback) {
     let previousTimestamp;
     const onFrame = (timestamp) => {
