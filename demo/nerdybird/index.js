@@ -16,6 +16,7 @@ new Platform(window).run(MAIN_CANVAS_ID, async (dependencies) => {
 //--------------
 // TODO:
 // - gamepads becomes stale and thus we get stuck in the endless loop
+//   - consider using https://developer.mozilla.org/en-US/docs/Web/API/Window/ongamepadconnected
 // - better name for displayPrerequisites: promptForReady, ?
 // - finish implementations of TextDisplay and Simulation
 // - write spec for timer.sleep
