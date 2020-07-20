@@ -11,6 +11,66 @@ describe("Controls", () => {
   });
 
   describe("getGamepadSample", () => {
-    // TODO
+    let mockMainWindow;
+
+    beforeEach(() => {
+      mockMainWindow = {
+        navigator: {
+          getGamepads: Mock.fn().mockName("getGamepads"),
+        },
+      };
+    });
+
+    describe("with an empty array", () => {
+      beforeEach(() => {
+        mockMainWindow.navigator.getGamepads.mock.implementation = () => [];
+      });
+
+      it("should invoke getGamepads once", () => {
+        new Controls(mockMainWindow).getGamepadSample();
+        expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return null", () => {
+        const result = new Controls(mockMainWindow).getGamepadSample();
+        expect(result).toBe(null);
+      });
+    });
+
+    describe("with an array containing null", () => {
+      beforeEach(() => {
+        mockMainWindow.navigator.getGamepads.mock.implementation = () => [null];
+      });
+
+      it("should invoke getGamepads once", () => {
+        new Controls(mockMainWindow).getGamepadSample();
+        expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return null", () => {
+        const result = new Controls(mockMainWindow).getGamepadSample();
+        expect(result).toBe(null);
+      });
+    });
+
+    describe("with an array containing a gamepad sample", () => {
+      const gamepadSample = {};
+
+      beforeEach(() => {
+        mockMainWindow.navigator.getGamepads.mock.implementation = () => [
+          gamepadSample,
+        ];
+      });
+
+      it("should invoke getGamepads once", () => {
+        new Controls(mockMainWindow).getGamepadSample();
+        expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return the gamepad sample", () => {
+        const result = new Controls(mockMainWindow).getGamepadSample();
+        expect(result).toBe(gamepadSample);
+      });
+    });
   });
 });

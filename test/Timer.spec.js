@@ -10,6 +10,22 @@ describe("Timer", () => {
     });
   });
 
+  describe("sleep", () => {
+    let mockMainWindow;
+
+    beforeEach(() => {
+      mockMainWindow = {
+        setTimeout: Mock.fn().mockName("setTimeout"),
+      };
+
+      new Timer(mockMainWindow).sleep();
+    });
+
+    it("should invoke setTimeout once", () => {
+      expect(mockMainWindow.setTimeout).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe("forEachAnimationFrame", () => {
     // Fake times (in seconds)
     const TIME_NOW = 3;
