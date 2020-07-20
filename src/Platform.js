@@ -1,3 +1,4 @@
+import Controls from "./Controls.js";
 import Timer from "./Timer.js";
 import UiElement from "./UiElement.js";
 
@@ -11,17 +12,16 @@ export default class Platform {
       const timer = new Timer(this.mainWindow);
       const mainCanvas = this.mainWindow.document.getElementById(canvasId);
       const uiElement = new UiElement(mainCanvas);
-      const visualContext = mainCanvas.getContext("2d");
 
       // Automatically resize the canvas
       timer.forEachAnimationFrame(() => uiElement.autoSize(this.mainWindow));
 
       const dependencies = {
         audioContext: new this.mainWindow.AudioContext(),
-        gamepads: this.mainWindow.navigator.getGamepads(),
+        controls: new Controls(this.mainWindow),
         timer,
         uiElement,
-        visualContext,
+        visualContext: mainCanvas.getContext("2d"),
       };
 
       callback(dependencies);

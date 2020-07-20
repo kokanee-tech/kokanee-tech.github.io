@@ -1,10 +1,10 @@
 export default class Simulation {
-  constructor({ audioContext, gamepads, timer, visualContext }) {
-    this.deps = { audioContext, gamepads, timer, visualContext };
+  constructor({ audioContext, controls, timer, visualContext }) {
+    this.deps = { audioContext, controls, timer, visualContext };
   }
 
   start() {
-    const { audioContext, gamepads, timer, visualContext } = this.deps;
+    const { audioContext, controls, timer, visualContext } = this.deps;
 
     /*
     const lfo = audioContext.createOscillator();
@@ -22,7 +22,7 @@ export default class Simulation {
       visualContext.beginPath();
 
       /*
-      helicopter.update(elapsedTime, gamepads[0]);
+      helicopter.update(elapsedTime, controls.getGamepadSample());
       lfo.frequency.value = helicopter.rotorSpeed; // or whatever...
       helicopter.drawSelf(visualContext);
       */

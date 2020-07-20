@@ -13,20 +13,20 @@ LEFT TRIGGER TO CLIMB
 RIGHT JOYSTICK TO TRAVERSE`;
 
 export default class App {
-  constructor({ audioContext, gamepads, timer, uiElement, visualContext }) {
-    this.deps = { audioContext, gamepads, timer, uiElement, visualContext };
+  constructor({ audioContext, controls, timer, uiElement, visualContext }) {
+    this.deps = { audioContext, controls, timer, uiElement, visualContext };
   }
 
   async displayPrerequisites(textDisplay) {
-    const { audioContext, gamepads, timer, uiElement } = this.deps;
+    const { audioContext, controls, timer, uiElement } = this.deps;
 
     textDisplay.title = TITLE;
     await timer.sleep(1000);
-    if (!gamepads[0]) {
+    if (!controls.getGamepadSample()) {
       textDisplay.message = MESSAGE_GAMEPAD_NOT_DETECTED;
       do {
         await timer.sleep(500);
-      } while (!gamepads[0]);
+      } while (!controls.getGamepadSample());
       textDisplay.message = "";
     }
 
