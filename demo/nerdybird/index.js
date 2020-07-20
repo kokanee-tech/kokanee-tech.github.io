@@ -16,7 +16,7 @@ new Platform(window).run(MAIN_CANVAS_ID, async (dependencies) => {
 //--------------
 // TODO:
 // - gamepads becomes stale and thus we get stuck in the endless loop
-// - better name for displayPrerequisites
+// - better name for displayPrerequisites: promptForReady, ?
 // - finish implementations of TextDisplay and Simulation
 // - write spec for timer.sleep
 // - finish spec for Platform

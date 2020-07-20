@@ -29,7 +29,7 @@ export default class Simulation {
 
     if (audioContext.state !== "running") {
       textDisplay.message = MESSAGE_CLICK_TO_START;
-      await uiElement.forUserClick();
+      await uiElement.userClick();
       textDisplay.message = "";
       await audioContext.resume();
     }

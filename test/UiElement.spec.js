@@ -33,7 +33,7 @@ describe("UiElement", () => {
     });
   });
 
-  describe("forUserClick", () => {
+  describe("userClick", () => {
     let mockCanvasElement;
 
     beforeEach(() => {
@@ -48,7 +48,7 @@ describe("UiElement", () => {
           "addEventListener"
         );
 
-        new UiElement(mockCanvasElement).forUserClick();
+        new UiElement(mockCanvasElement).userClick();
       });
 
       it("should invoke addEventListener once", () => {
@@ -66,7 +66,7 @@ describe("UiElement", () => {
           listener()
         ).mockName("addEventListener");
 
-        new UiElement(mockCanvasElement).forUserClick();
+        new UiElement(mockCanvasElement).userClick();
       });
 
       it("should invoke addEventListener once", () => {

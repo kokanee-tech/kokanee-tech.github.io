@@ -10,7 +10,7 @@ export default class UiElement {
     this.canvasElement.height = mainWindow.innerHeight;
   }
 
-  async forUserClick() {
+  async userClick() {
     return new Promise((resolve) => {
       const listener = () => {
         this.canvasElement.removeEventListener(EVENT_TYPE_CLICK, listener);
