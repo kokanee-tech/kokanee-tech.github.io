@@ -44,8 +44,8 @@ export default class App {
     const textDisplay = new TextDisplay(this.deps);
     textDisplay.start();
 
-    const simulation = new Simulation(this.deps);
     await this.displayPrerequisites(textDisplay);
-    simulation.start();
+
+    new Simulation(this.deps).start();
   }
 }
