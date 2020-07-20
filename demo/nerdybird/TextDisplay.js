@@ -1,7 +1,6 @@
 export default class TextDisplay {
   constructor({ timer, visualContext }) {
     this.deps = { timer, visualContext };
-    this.title = "";
     this.message = "";
   }
 
@@ -11,8 +10,7 @@ export default class TextDisplay {
     // set font of visualContext
 
     timer.forEachAnimationFrame(() => {
-      // draw this.title and this.message onto visualContext
-      visualContext.fillText(this.title, 10, 10);
+      // draw this.message onto visualContext
       visualContext.fillText(this.message, 10, 50);
     });
   }

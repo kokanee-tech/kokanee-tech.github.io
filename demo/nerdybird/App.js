@@ -1,51 +1,45 @@
 import Simulation from "./Simulation.js";
 import TextDisplay from "./TextDisplay.js";
 
-const TITLE = `---=== NerdyBird ===---`;
+const CLICK_TO_START = `CLICK TO START
+LEFT TRIGGER TO CLIMB
+RIGHT JOYSTICK TO TRAVERSE`;
 
-const MESSAGE_GAMEPAD_NOT_DETECTED = `No active gamepad detected.
+const GAMEPAD_NOT_DETECTED = `No active gamepad detected.
 If you have one and it's paired, press buttons to wake it up.
 Note this is still a work in progress. We use an Xbox One
 wireless controller with Chrome version 83 and macOS 10.11.5.`;
-
-const MESSAGE_CLICK_TO_START = `CLICK TO START
-LEFT TRIGGER TO CLIMB
-RIGHT JOYSTICK TO TRAVERSE`;
 
 export default class App {
   constructor({ audioContext, controls, timer, uiElement, visualContext }) {
     this.deps = { audioContext, controls, timer, uiElement, visualContext };
   }
 
-  async displayPrerequisites(textDisplay) {
+  async start() {
     const { audioContext, controls, timer, uiElement } = this.deps;
 
-    textDisplay.title = TITLE;
-    await timer.sleep(1000);
-    if (!controls.getGamepadSample()) {
-      textDisplay.message = MESSAGE_GAMEPAD_NOT_DETECTED;
-      do {
-        await timer.sleep(500);
-      } while (!controls.getGamepadSample());
-      textDisplay.message = "";
-    }
+    const textDisplay = new TextDisplay(this.deps);
+    textDisplay.start();
 
     if (audioContext.state !== "running") {
-      textDisplay.message = MESSAGE_CLICK_TO_START;
+      textDisplay.message = CLICK_TO_START;
       await uiElement.userClick();
       textDisplay.message = "";
       await audioContext.resume();
     }
 
-    textDisplay.title = "";
-  }
+    const simulation = new Simulation(this.deps);
 
-  async start() {
-    const textDisplay = new TextDisplay(this.deps);
-    textDisplay.start();
+    timer.forEachAnimationFrame(() => {
+      if (!controls.getGamepadSample()) {
+        simulation.paused = true;
+        textDisplay.message = GAMEPAD_NOT_DETECTED;
+      } else {
+        textDisplay.message = "";
+        simulation.paused = false;
+      }
+    });
 
-    await this.displayPrerequisites(textDisplay);
-
-    new Simulation(this.deps).start();
+    simulation.start();
   }
 }

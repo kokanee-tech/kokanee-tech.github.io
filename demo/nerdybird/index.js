@@ -9,8 +9,7 @@ new Platform(window).run(MAIN_CANVAS_ID, (dependencies) => {
 
 //--------------
 // TODO:
-// - Controls, getGamepadSample(), spec
-// - better name for displayPrerequisites (eg promptForReady?) or split
+// - write spec for controls.getGamepadSample()
 // - finish implementations of TextDisplay and Simulation
 // - write spec for timer.sleep
 // - finish spec for Platform
