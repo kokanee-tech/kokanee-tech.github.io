@@ -16,7 +16,18 @@ export default class App {
   }
 
   async start() {
-    const { audioContext, controls, timer, uiElement } = this.deps;
+    const {
+      audioContext,
+      controls,
+      timer,
+      uiElement,
+      visualContext,
+    } = this.deps;
+
+    timer.forEachAnimationFrame(() => {
+      visualContext.strokeStyle = "white";
+      visualContext.fillStyle = "white";
+    });
 
     const textDisplay = new TextDisplay(this.deps);
     textDisplay.start();
