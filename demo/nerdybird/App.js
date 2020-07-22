@@ -7,8 +7,9 @@ RIGHT JOYSTICK TO TRAVERSE`;
 
 const GAMEPAD_NOT_DETECTED = `No active gamepad detected.
 If you have one and it's paired, press buttons to wake it up.
-Note this is still a work in progress. We use an Xbox One
-wireless controller with Chrome version 83 and macOS 10.11.5.`;
+
+(Support may be very limited: Xbox One wireless controller,
+Chrome version 83, and macOS 10.11.5 for example)`;
 
 export default class App {
   constructor({ audioContext, controls, timer, uiElement, visualContext }) {
@@ -24,14 +25,31 @@ export default class App {
       visualContext,
     } = this.deps;
 
+    //
+    // First we set the drawing styles (colours)
+    //
     timer.forEachAnimationFrame(() => {
       visualContext.strokeStyle = "white";
       visualContext.fillStyle = "white";
     });
 
+    //
+    // Now we can start the text display
+    //
     const textDisplay = new TextDisplay(this.deps);
-    textDisplay.start();
+    textDisplay
+      .loadSettings({
+        fontFamily: "'Courier New', monospace",
+        fontSize: "24px",
+        lineStride: 30,
+        topMargin: 120,
+      })
+      .start();
 
+    //
+    // Make sure that the audio context is running
+    // (due to browser autoplay policies)
+    //
     if (audioContext.state !== "running") {
       textDisplay.message = CLICK_TO_START;
       await uiElement.userClick();
@@ -39,8 +57,11 @@ export default class App {
       await audioContext.resume();
     }
 
+    //
+    // Gamepads (at least in Chrome) only support
+    // polling
+    //
     const simulation = new Simulation(this.deps);
-
     timer.forEachAnimationFrame(() => {
       if (!controls.getGamepadSample()) {
         simulation.paused = true;
@@ -51,6 +72,9 @@ export default class App {
       }
     });
 
+    //
+    // Finally we can start the simulation
+    //
     simulation.start();
   }
 }
