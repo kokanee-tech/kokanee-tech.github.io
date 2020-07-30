@@ -8,6 +8,10 @@ describe("UiElement", () => {
       const canvasElement = {};
       expect(new UiElement(canvasElement).canvasElement).toBe(canvasElement);
     });
+
+    it("should throw for a null element", () => {
+      expect(() => new UiElement(null)).toThrowSomething();
+    });
   });
 
   describe("autoSize", () => {

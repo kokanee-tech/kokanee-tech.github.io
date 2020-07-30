@@ -15,6 +15,9 @@ export default class Simulation {
     */
 
     timer.forEachAnimationFrame((elapsedTime) => {
+      // TODO: remember to mute while paused
+      //...
+
       if (!this.paused) {
         const w = visualContext.canvas.width;
         const h = visualContext.canvas.height;
