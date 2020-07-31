@@ -6,10 +6,3 @@ const MAIN_CANVAS_ID = "main-canvas"; // by convention
 new Platform(window).run(MAIN_CANVAS_ID, (dependencies) => {
   new App(dependencies).start();
 });
-
-//--------------
-// TODO:
-// - finish implementations of TextDisplay and Simulation
-// - finish spec for Platform
-// - audio
-//--------------

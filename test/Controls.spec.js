@@ -16,7 +16,7 @@ describe("Controls", () => {
     beforeEach(() => {
       mockMainWindow = {
         navigator: {
-          getGamepads: Mock.fn().mockName("getGamepads"),
+          getGamepads: Mock.fn().mockName("navigator.getGamepads"),
         },
       };
     });
@@ -26,7 +26,7 @@ describe("Controls", () => {
         mockMainWindow.navigator.getGamepads.mock.implementation = () => [];
       });
 
-      it("should invoke getGamepads once", () => {
+      it("should invoke navigator.getGamepads once", () => {
         new Controls(mockMainWindow).getGamepadSample();
         expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
       });
@@ -42,7 +42,7 @@ describe("Controls", () => {
         mockMainWindow.navigator.getGamepads.mock.implementation = () => [null];
       });
 
-      it("should invoke getGamepads once", () => {
+      it("should invoke navigator.getGamepads once", () => {
         new Controls(mockMainWindow).getGamepadSample();
         expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
       });
@@ -62,7 +62,7 @@ describe("Controls", () => {
         ];
       });
 
-      it("should invoke getGamepads once", () => {
+      it("should invoke navigator.getGamepads once", () => {
         new Controls(mockMainWindow).getGamepadSample();
         expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
       });

@@ -11,27 +11,98 @@ describe("Platform", () => {
   });
 
   describe("run", () => {
-    // TODO
-    /*
-    with no matching element found for that canvas ID:
-    - should invoke console.error once
-    - should invoke alert once
+    let mockMainWindow;
 
-    with a callback that throws an exception:
-    - should invoke console.error once
-    - should invoke alert once
+    beforeEach(() => {
+      mockMainWindow = {
+        alert: Mock.fn().mockName("alert"),
+        AudioContext: function () {},
+        console: {
+          error: Mock.fn().mockName("console.error"),
+        },
+        document: {
+          getElementById: Mock.fn().mockName("document.getElementById"),
+        },
+        performance: {
+          now: () => {},
+        },
+        requestAnimationFrame: () => {},
+      };
+    });
 
-    with no exceptions thrown:
-    - should invoke document.getElementById once with canvas ID
-    - should invoke getContext once with a literal "2d"
-    - should invoke the callback once
+    describe("with no element found matching the specified canvas ID", () => {
+      beforeEach(() => {
+        mockMainWindow.document.getElementById.mock.implementation = () => null;
 
-      the dependencies passed to the callback
-      - should have an audio context
-      - should have a controls object
-      - should have a timer
-      - should have a UI element
-      - should have a visual context
-    */
+        new Platform(mockMainWindow).run();
+      });
+
+      it("should invoke console.error once", () => {
+        expect(mockMainWindow.console.error).toHaveBeenCalledTimes(1);
+      });
+
+      it("should invoke alert once", () => {
+        expect(mockMainWindow.alert).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe("with an exception thrown in the callback", () => {
+      let mockCallback;
+
+      beforeEach(() => {
+        mockMainWindow.document.getElementById.mock.implementation = () => ({
+          getContext: () => {},
+        });
+
+        mockCallback = Mock.fn(() => {
+          throw new Error();
+        }).mockName("callback");
+
+        new Platform(mockMainWindow).run("", mockCallback);
+      });
+
+      it("should invoke console.error once", () => {
+        expect(mockMainWindow.console.error).toHaveBeenCalledTimes(1);
+      });
+
+      it("should invoke alert once", () => {
+        expect(mockMainWindow.alert).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe("with no exception thrown", () => {
+      const FAKE_CANVAS_ID = "fake-canvas-id";
+      let mockCallback;
+      let mockElement;
+
+      beforeEach(() => {
+        mockElement = {
+          getContext: Mock.fn().mockName("getContext"),
+        };
+
+        mockMainWindow.document.getElementById.mock.implementation = () =>
+          mockElement;
+
+        mockCallback = Mock.fn().mockName("callback");
+
+        new Platform(mockMainWindow).run(FAKE_CANVAS_ID, mockCallback);
+      });
+
+      it("should invoke document.getElementById once with canvas ID", () => {
+        expect(mockMainWindow.document.getElementById).toHaveBeenCalledTimes(1);
+        expect(
+          mockMainWindow.document.getElementById
+        ).toHaveBeenCalledWithShallow(FAKE_CANVAS_ID);
+      });
+
+      it("should invoke getContext once with '2d'", () => {
+        expect(mockElement.getContext).toHaveBeenCalledTimes(1);
+        expect(mockElement.getContext).toHaveBeenCalledWithShallow("2d");
+      });
+
+      it("should invoke the callback once", () => {
+        expect(mockCallback).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 });
