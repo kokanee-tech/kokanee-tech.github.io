@@ -35,6 +35,7 @@ describe("Timer", () => {
     const getTimestamp = (time) => time * 1000;
 
     let mockMainWindow;
+    let mockCallback;
 
     beforeEach(() => {
       mockMainWindow = {
@@ -43,19 +44,14 @@ describe("Timer", () => {
             "performance.now"
           ),
         },
+        requestAnimationFrame: Mock.fn().mockName("requestAnimationFrame"),
       };
+
+      mockCallback = Mock.fn().mockName("callback");
     });
 
     describe("without frame event", () => {
-      let mockCallback;
-
       beforeEach(() => {
-        mockMainWindow.requestAnimationFrame = Mock.fn().mockName(
-          "requestAnimationFrame"
-        );
-
-        mockCallback = Mock.fn().mockName("callback");
-
         new Timer(mockMainWindow).forEachAnimationFrame(mockCallback);
       });
 
@@ -73,17 +69,14 @@ describe("Timer", () => {
     });
 
     describe("with frame event", () => {
-      let mockCallback;
-
       beforeEach(() => {
-        mockMainWindow.requestAnimationFrame = Mock.fn((onFrame) =>
-          onFrame(getTimestamp(TIME_FRAME_EVENT))
-        ).mockName("requestAnimationFrame");
+        mockMainWindow.requestAnimationFrame.mock.implementation = (onFrame) =>
+          onFrame(getTimestamp(TIME_FRAME_EVENT));
 
-        mockCallback = Mock.fn(() => {
-          // Clear the mock rAF implementation to avoid an endless loop
+        mockCallback.mock.implementation = () => {
+          // Reset the mock rAF implementation to avoid an endless loop
           mockMainWindow.requestAnimationFrame.mock.implementation = () => {};
-        }).mockName("callback");
+        };
 
         new Timer(mockMainWindow).forEachAnimationFrame(mockCallback);
       });

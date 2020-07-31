@@ -43,15 +43,12 @@ describe("UiElement", () => {
     beforeEach(() => {
       mockCanvasElement = {
         removeEventListener: Mock.fn().mockName("removeEventListener"),
+        addEventListener: Mock.fn().mockName("addEventListener"),
       };
     });
 
     describe("without click event", () => {
       beforeEach(() => {
-        mockCanvasElement.addEventListener = Mock.fn().mockName(
-          "addEventListener"
-        );
-
         new UiElement(mockCanvasElement).userClick();
       });
 
@@ -66,9 +63,10 @@ describe("UiElement", () => {
 
     describe("with click event", () => {
       beforeEach(() => {
-        mockCanvasElement.addEventListener = Mock.fn((type, listener) =>
-          listener()
-        ).mockName("addEventListener");
+        mockCanvasElement.addEventListener.mock.implementation = (
+          type,
+          listener
+        ) => listener();
 
         new UiElement(mockCanvasElement).userClick();
       });
