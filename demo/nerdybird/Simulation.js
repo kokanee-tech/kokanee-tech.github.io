@@ -12,7 +12,7 @@ export default class Simulation {
     //
     // Indicator for simulation time
     //
-    const clock = new Clock(this.deps);
+    const clock = new Clock();
 
     /*
     const lfo = audioContext.createOscillator();
@@ -22,50 +22,46 @@ export default class Simulation {
     */
 
     timer.forEachAnimationFrame((elapsedTime) => {
+      //
+      // Use paths throughout for simple drawing
+      //
+      visualContext.beginPath();
+
       const canvasWidth = visualContext.canvas.width;
       const canvasHeight = visualContext.canvas.height;
 
       visualContext.save();
       visualContext.translate(canvasWidth - 12, 12);
       visualContext.scale(10, 10);
-      visualContext.beginPath();
-      clock.indicate();
+      clock.drawSelf(visualContext);
       visualContext.restore();
-      visualContext.stroke();
+
+      visualContext.save();
+      visualContext.translate(canvasWidth / 2, canvasHeight / 2);
+      visualContext.scale(100, -100);
+      //helicopter.drawSelf(visualContext);
+      visualContext.restore();
 
       if (this.paused) {
         // TODO: mute audio
       } else {
+        //lfo.frequency.value = helicopter.rotorSpeed; // or whatever...
+
         //
-        // Browers suspend animations while the tab is in the background
-        // so we need an upper limit on the value that we use for numerical
-        // integration.
+        // The brower generally suspends the animations for a tab while
+        // the tab is in the background. Limit the integration stepsize
+        // in case the animation has been suspended.
         //
         const MAX_STEPSIZE = 0.1;
         const stepsize = Math.min(elapsedTime, MAX_STEPSIZE);
-
-        visualContext.save();
-        visualContext.translate(canvasWidth / 2, canvasHeight / 2);
-        visualContext.scale(100, -100);
-        visualContext.beginPath();
-
-        /*
-        helicopter.update(elapsedTime, controls.getGamepadSample());
-        lfo.frequency.value = helicopter.rotorSpeed; // or whatever...
-        helicopter.drawSelf(visualContext);
-        */
-
-        visualContext.moveTo(-2, -2);
-        visualContext.lineTo(2, -2);
-        visualContext.lineTo(2, 2);
-        visualContext.lineTo(-2, 2);
-        visualContext.lineTo(-2, -2);
-
-        visualContext.restore();
-        visualContext.stroke();
-
         clock.update(stepsize);
+        //helicopter.update(stepsize, controls.getGamepadSample());
       }
+
+      //
+      // Render all paths after context has been restored
+      //
+      visualContext.stroke();
     });
   }
 }

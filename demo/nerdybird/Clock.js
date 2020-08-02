@@ -1,13 +1,10 @@
 export default class Clock {
-  constructor({ visualContext }) {
-    this.deps = { visualContext };
+  constructor() {
     this.time = 0;
   }
 
-  indicate() {
-    const { visualContext } = this.deps;
+  drawSelf(visualContext) {
     const angle = (2 * Math.PI * this.time) / 60;
-
     visualContext.moveTo(0, 0);
     visualContext.lineTo(Math.sin(angle), -Math.cos(angle));
   }
