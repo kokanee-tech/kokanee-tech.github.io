@@ -1,3 +1,5 @@
+import Clock from "./Clock.js";
+
 export default class Simulation {
   constructor({ audioContext, controls, timer, visualContext }) {
     this.deps = { audioContext, controls, timer, visualContext };
@@ -7,6 +9,11 @@ export default class Simulation {
   start() {
     const { audioContext, controls, timer, visualContext } = this.deps;
 
+    //
+    // Indicator for simulation time
+    //
+    const clock = new Clock(this.deps);
+
     /*
     const lfo = audioContext.createOscillator();
     //...more audio graph setup...
@@ -15,14 +22,30 @@ export default class Simulation {
     */
 
     timer.forEachAnimationFrame((elapsedTime) => {
-      // TODO: remember to mute while paused
-      //...
+      const canvasWidth = visualContext.canvas.width;
+      const canvasHeight = visualContext.canvas.height;
 
-      if (!this.paused) {
-        const w = visualContext.canvas.width;
-        const h = visualContext.canvas.height;
+      visualContext.save();
+      visualContext.translate(canvasWidth - 12, 12);
+      visualContext.scale(10, 10);
+      visualContext.beginPath();
+      clock.indicate();
+      visualContext.restore();
+      visualContext.stroke();
+
+      if (this.paused) {
+        // TODO: mute audio
+      } else {
+        //
+        // Browers suspend animations while the tab is in the background
+        // so we need an upper limit on the value that we use for numerical
+        // integration.
+        //
+        const MAX_STEPSIZE = 0.1;
+        const stepsize = Math.min(elapsedTime, MAX_STEPSIZE);
+
         visualContext.save();
-        visualContext.translate(w / 2, h / 2);
+        visualContext.translate(canvasWidth / 2, canvasHeight / 2);
         visualContext.scale(100, -100);
         visualContext.beginPath();
 
@@ -40,6 +63,8 @@ export default class Simulation {
 
         visualContext.restore();
         visualContext.stroke();
+
+        clock.update(stepsize);
       }
     });
   }

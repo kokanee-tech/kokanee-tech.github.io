@@ -19,19 +19,15 @@ export default class TextDisplay {
 
   start() {
     const { timer, visualContext } = this.deps;
-    const settings = this.settings;
+    const { fontFamily, fontSize, lineStride, topMargin } = this.settings;
 
     timer.forEachAnimationFrame(() => {
-      visualContext.font = `${settings.fontSize} ${settings.fontFamily}`;
+      visualContext.font = `${fontSize} ${fontFamily}`;
       visualContext.textAlign = "center";
 
       const xCenter = visualContext.canvas.width / 2;
       this.message.split("\n").forEach((line, index) => {
-        visualContext.fillText(
-          line,
-          xCenter,
-          index * settings.lineStride + settings.topMargin
-        );
+        visualContext.fillText(line, xCenter, index * lineStride + topMargin);
       });
     });
   }
