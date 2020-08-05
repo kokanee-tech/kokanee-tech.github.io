@@ -2,9 +2,9 @@ import Pseudorandom from "../../src/Pseudorandom.js";
 import SoundSimulationContext from "./SoundSimulationContext.js";
 
 const GRAIN_DURATION = 0.05;
-const ZERO_SPEED_FREQUENCY = 0.1;
+const ZERO_SPEED_FREQUENCY = 1;
 const FULL_SPEED_FREQUENCY = 15;
-const ZERO_SPEED_GAIN = 0.6;
+const ZERO_SPEED_GAIN = 0;
 const FULL_SPEED_GAIN = 1;
 
 export default class RotorSoundGenerator {
@@ -37,6 +37,7 @@ export default class RotorSoundGenerator {
     this.pulseOscillator.frequency.value =
       (1 - motorSpeed) * ZERO_SPEED_FREQUENCY +
       motorSpeed * FULL_SPEED_FREQUENCY;
+
     // TODO: lerp
     this.gainNode.gain.value =
       (1 - motorSpeed) * ZERO_SPEED_GAIN + motorSpeed * FULL_SPEED_GAIN;

@@ -11,5 +11,4 @@ new Platform(window).run(MAIN_CANVAS_ID, (dependencies) => {
  TODO
  - lerp, lag, and tent functions for scalars
  - pause simulation when page becomes not visible (eg add a new dependency that issues page visibility events?)
- - proper motor spool-up sound or perhaps a starting "stutter"
 */
