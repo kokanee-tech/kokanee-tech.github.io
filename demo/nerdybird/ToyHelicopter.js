@@ -1,4 +1,5 @@
 import RotorSoundGenerator from "./RotorSoundGenerator.js";
+import Scalar from "../../src/Scalar.js";
 
 const IDLE_THROTTLE_MOTOR_SPEED = 0.4;
 const FULL_THROTTLE_MOTOR_SPEED = 1;
@@ -19,20 +20,22 @@ export default class ToyHelicopter {
   }
 
   update(stepsize, throttle) {
-    // TODO: lerp
-    const motorSpeedCommand =
-      (1 - throttle) * IDLE_THROTTLE_MOTOR_SPEED +
-      throttle * FULL_THROTTLE_MOTOR_SPEED;
-
-    // TODO: lerp
-    const responseTime =
-      (1 - this.motorSpeed) * ZERO_SPEED_RESPONSE_TIME +
-      this.motorSpeed * FULL_SPEED_RESPONSE_TIME;
-
-    // TODO: lag
-    this.motorSpeed +=
-      ((motorSpeedCommand - this.motorSpeed) * stepsize) /
-      (stepsize + responseTime);
+    const motorSpeedCommand = Scalar.lerp(
+      IDLE_THROTTLE_MOTOR_SPEED,
+      FULL_THROTTLE_MOTOR_SPEED,
+      throttle
+    );
+    const responseTime = Scalar.lerp(
+      ZERO_SPEED_RESPONSE_TIME,
+      FULL_SPEED_RESPONSE_TIME,
+      this.motorSpeed
+    );
+    this.motorSpeed = Scalar.lag(
+      this.motorSpeed,
+      motorSpeedCommand,
+      1 / responseTime,
+      stepsize
+    );
 
     this.rotorSoundGenerator.update(this.motorSpeed);
   }

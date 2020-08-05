@@ -9,6 +9,6 @@ new Platform(window).run(MAIN_CANVAS_ID, (dependencies) => {
 
 /*
  TODO
- - lerp, lag, and tent functions for scalars
+ - Scalar spec tests
  - pause simulation when page becomes not visible (eg add a new dependency that issues page visibility events?)
 */

@@ -1,4 +1,5 @@
 import IndicatorBar from "./IndicatorBar.js";
+import Scalar from "../../src/Scalar.js";
 import ToyHelicopter from "./ToyHelicopter.js";
 
 export default class Simulation {
@@ -50,7 +51,8 @@ export default class Simulation {
         //
         const MAX_STEPSIZE = 0.1;
         const stepsize = Math.min(elapsedTime, MAX_STEPSIZE);
-        time += stepsize;
+
+        time = Scalar.integrate(time, 1, stepsize);
         toyHelicopter.update(stepsize, throttle);
       }
 

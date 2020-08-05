@@ -1,4 +1,5 @@
 import Pseudorandom from "../../src/Pseudorandom.js";
+import Scalar from "../../src/Scalar.js";
 import SoundSimulationContext from "./SoundSimulationContext.js";
 
 const GRAIN_DURATION = 0.05;
@@ -15,8 +16,7 @@ export default class RotorSoundGenerator {
     const grainConvolver = soundSimulationContext.createGrainConvolver(
       GRAIN_DURATION,
       (frame, frameCount) =>
-        (2 * pseudorandom.nextScalar() - 1) *
-        Math.min((2 * frame) / frameCount, 2 - (2 * frame) / frameCount) // TODO: tent
+        (2 * pseudorandom.nextScalar() - 1) * Scalar.tent(frame / frameCount)
     );
     const gainNode = audioContext.createGain();
 
@@ -33,13 +33,15 @@ export default class RotorSoundGenerator {
   }
 
   update(motorSpeed) {
-    // TODO: lerp
-    this.pulseOscillator.frequency.value =
-      (1 - motorSpeed) * ZERO_SPEED_FREQUENCY +
-      motorSpeed * FULL_SPEED_FREQUENCY;
-
-    // TODO: lerp
-    this.gainNode.gain.value =
-      (1 - motorSpeed) * ZERO_SPEED_GAIN + motorSpeed * FULL_SPEED_GAIN;
+    this.pulseOscillator.frequency.value = Scalar.lerp(
+      ZERO_SPEED_FREQUENCY,
+      FULL_SPEED_FREQUENCY,
+      motorSpeed
+    );
+    this.gainNode.gain.value = Scalar.lerp(
+      ZERO_SPEED_GAIN,
+      FULL_SPEED_GAIN,
+      motorSpeed
+    );
   }
 }
