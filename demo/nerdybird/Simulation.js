@@ -53,7 +53,7 @@ export default class Simulation {
         const stepsize = Math.min(elapsedTime, MAX_STEPSIZE);
 
         time = Scalar.integrate(time, 1, stepsize);
-        toyHelicopter.update(stepsize, throttle);
+        toyHelicopter.update(throttle, stepsize);
       }
 
       visualContext.stroke();

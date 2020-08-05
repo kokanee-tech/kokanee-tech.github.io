@@ -19,7 +19,7 @@ export default class ToyHelicopter {
     this.rotorSoundGenerator.start();
   }
 
-  update(stepsize, throttle) {
+  update(throttle, stepsize) {
     const motorSpeedCommand = Scalar.lerp(
       IDLE_THROTTLE_MOTOR_SPEED,
       FULL_THROTTLE_MOTOR_SPEED,
