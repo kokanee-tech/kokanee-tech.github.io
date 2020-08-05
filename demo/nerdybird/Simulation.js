@@ -1,7 +1,5 @@
-import CyclicSoundGenerator from "./CyclicSoundGenerator.js";
 import IndicatorBar from "./IndicatorBar.js";
-import Pseudorandom from "../../src/Pseudorandom.js";
-import SoundSimulationContext from "./SoundSimulationContext.js";
+import ToyHelicopter from "./ToyHelicopter.js";
 
 export default class Simulation {
   constructor({ audioContext, controls, timer, visualContext }) {
@@ -11,30 +9,22 @@ export default class Simulation {
 
   start() {
     const { audioContext, controls, timer, visualContext } = this.deps;
-    const pseudorandom = new Pseudorandom();
     const indicatorBar = new IndicatorBar(this.deps).loadSettings({
       gaugeSize: 20,
     });
-    const soundSimulationContext = new SoundSimulationContext(this.deps);
-    const cyclicSoundGenerator = new CyclicSoundGenerator(
-      soundSimulationContext,
-      0.05,
-      (frame, frameCount) =>
-        (2 * pseudorandom.nextScalar() - 1) *
-        Math.min((2 * frame) / frameCount, 2 - (2 * frame) / frameCount)
-    );
+    const masterGain = audioContext.createGain();
+    const toyHelicopter = new ToyHelicopter(audioContext, masterGain);
+    masterGain.connect(audioContext.destination);
 
     let time = 0;
-    let motorSpeed = 0;
-    cyclicSoundGenerator.connect(audioContext.destination);
-    cyclicSoundGenerator.setFrequency(8 + 7 * motorSpeed);
-    cyclicSoundGenerator.start();
+    masterGain.gain.value = 0;
+    toyHelicopter.start();
 
     timer.forEachAnimationFrame((elapsedTime) => {
       visualContext.beginPath();
 
       indicatorBar.drawAngularGauge(0, (2 * Math.PI * time) / 60);
-      indicatorBar.drawLinearGauge(1, motorSpeed);
+      indicatorBar.drawLinearGauge(1, toyHelicopter.motorSpeed);
 
       const canvasWidth = visualContext.canvas.width;
       const canvasHeight = visualContext.canvas.height;
@@ -45,12 +35,13 @@ export default class Simulation {
       visualContext.restore();
 
       if (this.paused) {
-        // TODO: mute audio
+        masterGain.gain.value = 0;
       } else {
+        masterGain.gain.value = 1;
+
         const gamepadSample = controls.getGamepadSample();
         const throttle = gamepadSample.buttons[6].value; // left trigger
         indicatorBar.drawLinearGauge(2, throttle);
-        cyclicSoundGenerator.setFrequency(8 + 7 * motorSpeed);
 
         //
         // Limit the integration stepsize in case the animation has been
@@ -60,8 +51,7 @@ export default class Simulation {
         const MAX_STEPSIZE = 0.1;
         const stepsize = Math.min(elapsedTime, MAX_STEPSIZE);
         time += stepsize;
-        motorSpeed += ((throttle - motorSpeed) * stepsize) / (stepsize + 0.03);
-        //helicopter.update(stepsize, controls.getGamepadSample());
+        toyHelicopter.update(stepsize, throttle);
       }
 
       visualContext.stroke();

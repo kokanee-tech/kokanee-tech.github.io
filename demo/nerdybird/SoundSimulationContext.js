@@ -1,16 +1,15 @@
 export default class SoundSimulationContext {
-  constructor({ audioContext }) {
-    this.deps = { audioContext };
+  constructor(audioContext) {
+    this.audioContext = audioContext;
   }
 
   createGrainConvolver(grainDuration, callback) {
-    const { audioContext } = this.deps;
     const CHANNEL_COUNT = 1;
-    const frameCount = grainDuration * audioContext.sampleRate;
-    const buffer = audioContext.createBuffer(
+    const frameCount = grainDuration * this.audioContext.sampleRate;
+    const buffer = this.audioContext.createBuffer(
       CHANNEL_COUNT,
       frameCount,
-      audioContext.sampleRate
+      this.audioContext.sampleRate
     );
 
     const channelData = buffer.getChannelData(0);
@@ -18,20 +17,19 @@ export default class SoundSimulationContext {
       channelData[frame] = callback(frame, frameCount);
     }
 
-    const convolver = audioContext.createConvolver();
+    const convolver = this.audioContext.createConvolver();
     convolver.buffer = buffer;
     return convolver;
   }
 
   createPulseOscillator() {
-    const { audioContext } = this.deps;
     const COEFFICIENT_COUNT = 2048;
-    const periodicWave = audioContext.createPeriodicWave(
+    const periodicWave = this.audioContext.createPeriodicWave(
       new Array(COEFFICIENT_COUNT).fill(1),
       new Array(COEFFICIENT_COUNT).fill(0)
     );
 
-    const oscillator = audioContext.createOscillator();
+    const oscillator = this.audioContext.createOscillator();
     oscillator.setPeriodicWave(periodicWave);
     return oscillator;
   }
