@@ -16,8 +16,18 @@ export default class Platform {
       // Automatically resize the canvas
       timer.forEachAnimationFrame(() => uiElement.autoSize(this.mainWindow));
 
+      // Suspend audio when page is hidden
+      const audioContext = new this.mainWindow.AudioContext();
+      this.mainWindow.document.addEventListener("visibilitychange", () => {
+        if (this.mainWindow.document.hidden) {
+          audioContext.suspend();
+        } else {
+          audioContext.resume();
+        }
+      });
+
       const dependencies = {
-        audioContext: new this.mainWindow.AudioContext(),
+        audioContext,
         controls: new Controls(this.mainWindow),
         timer,
         uiElement,

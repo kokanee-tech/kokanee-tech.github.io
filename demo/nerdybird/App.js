@@ -63,13 +63,9 @@ export default class App {
     //
     const simulation = new Simulation(this.deps);
     timer.forEachAnimationFrame(() => {
-      if (!controls.getGamepadSample()) {
-        simulation.paused = true;
-        textDisplay.message = GAMEPAD_NOT_DETECTED;
-      } else {
-        textDisplay.message = "";
-        simulation.paused = false;
-      }
+      textDisplay.message = controls.getGamepadSample()
+        ? ""
+        : GAMEPAD_NOT_DETECTED;
     });
 
     //
