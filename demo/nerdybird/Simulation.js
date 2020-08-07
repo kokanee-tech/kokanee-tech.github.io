@@ -35,19 +35,21 @@ export default class Simulation {
       visualContext.restore();
 
       const gamepadSample = controls.getGamepadSample();
-      const throttle = gamepadSample.buttons[6].value; // left trigger
-      indicatorBar.drawLinearGauge(2, throttle);
+      if (gamepadSample) {
+        const throttle = gamepadSample.buttons[6].value; // left trigger
+        indicatorBar.drawLinearGauge(2, throttle);
 
-      //
-      // Limit the integration stepsize in case the animation has been
-      // suspended. (The browser may suspend animations if the tab is
-      // in the background).
-      //
-      const MAX_STEPSIZE = 0.1;
-      const stepsize = Math.min(elapsedTime, MAX_STEPSIZE);
+        //
+        // Limit the integration stepsize in case the animation has been
+        // suspended. (The browser may suspend animations if the tab is
+        // in the background).
+        //
+        const MAX_STEPSIZE = 0.1;
+        const stepsize = Math.min(elapsedTime, MAX_STEPSIZE);
 
-      time = Scalar.integrate(time, 1, stepsize);
-      toyHelicopter.update(throttle, stepsize);
+        time = Scalar.integrate(time, 1, stepsize);
+        toyHelicopter.update(throttle, stepsize);
+      }
 
       visualContext.stroke();
     });
