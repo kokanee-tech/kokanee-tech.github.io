@@ -8,5 +8,5 @@ new Platform(window).run(MAIN_CANVAS_ID, (dependencies) => {
 });
 /*
  TODO:
-  - fix unit tests!!!
+  - finish unit tests for viz change handlers
 */

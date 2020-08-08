@@ -22,6 +22,7 @@ describe("Platform", () => {
         },
         document: {
           getElementById: Mock.fn().mockName("document.getElementById"),
+          addEventListener: Mock.fn().mockName("addEventListener"),
         },
         performance: {
           now: () => {},
@@ -93,6 +94,12 @@ describe("Platform", () => {
         expect(
           mockMainWindow.document.getElementById
         ).toHaveBeenCalledWithShallow(FAKE_CANVAS_ID);
+      });
+
+      it("should invoke addEventListener twice (see Controls)", () => {
+        expect(mockMainWindow.document.addEventListener).toHaveBeenCalledTimes(
+          2
+        );
       });
 
       it("should invoke getContext once with '2d'", () => {

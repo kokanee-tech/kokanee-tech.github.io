@@ -3,24 +3,36 @@ import Mock from "../src/specish/Mock.js";
 import Controls from "../src/Controls.js";
 
 describe("Controls", () => {
+  let mockMainWindow;
+
+  beforeEach(() => {
+    mockMainWindow = {
+      navigator: {
+        getGamepads: Mock.fn().mockName("navigator.getGamepads"),
+      },
+      document: {
+        addEventListener: Mock.fn().mockName("addEventListener"),
+      },
+    };
+  });
+
   describe("constructor", () => {
+    let underTest;
+
+    beforeEach(() => {
+      underTest = new Controls(mockMainWindow);
+    });
+
     it("should save the main window", () => {
-      const mainWindow = {};
-      expect(new Controls(mainWindow).mainWindow).toBe(mainWindow);
+      expect(underTest.mainWindow).toBe(mockMainWindow);
+    });
+
+    it("should invoke addEventListener once", () => {
+      expect(mockMainWindow.document.addEventListener).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("getGamepadSample", () => {
-    let mockMainWindow;
-
-    beforeEach(() => {
-      mockMainWindow = {
-        navigator: {
-          getGamepads: Mock.fn().mockName("navigator.getGamepads"),
-        },
-      };
-    });
-
     describe("with an empty array", () => {
       beforeEach(() => {
         mockMainWindow.navigator.getGamepads.mock.implementation = () => [];
