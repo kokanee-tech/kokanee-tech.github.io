@@ -12,17 +12,28 @@ describe("Platform", () => {
 
   describe("run", () => {
     let mockMainWindow;
+    let mockAudioContext;
 
     beforeEach(() => {
+      mockAudioContext = {
+        suspend: Mock.fn().mockName("suspend"),
+        resume: Mock.fn().mockName("resume"),
+      };
+
       mockMainWindow = {
         alert: Mock.fn().mockName("alert"),
-        AudioContext: function () {},
+        AudioContext: function () {
+          return mockAudioContext;
+        },
         console: {
           error: Mock.fn().mockName("console.error"),
         },
         document: {
           getElementById: Mock.fn().mockName("document.getElementById"),
           addEventListener: Mock.fn().mockName("addEventListener"),
+        },
+        navigator: {
+          getGamepads: () => {}, // see Controls constructor
         },
         performance: {
           now: () => {},
@@ -72,7 +83,6 @@ describe("Platform", () => {
     });
 
     describe("with no exception thrown", () => {
-      const FAKE_CANVAS_ID = "fake-canvas-id";
       let mockCallback;
       let mockElement;
 
@@ -84,31 +94,83 @@ describe("Platform", () => {
         mockMainWindow.document.getElementById.mock.implementation = () =>
           mockElement;
 
-        mockCallback = Mock.fn().mockName("callback");
+        mockMainWindow.document.addEventListener.mock.implementation = (
+          type,
+          listener
+        ) => {
+          listener();
+        };
 
-        new Platform(mockMainWindow).run(FAKE_CANVAS_ID, mockCallback);
+        mockCallback = Mock.fn().mockName("callback");
       });
 
       it("should invoke document.getElementById once with canvas ID", () => {
+        const FAKE_CANVAS_ID = "fake-canvas-id";
+        new Platform(mockMainWindow).run(FAKE_CANVAS_ID, mockCallback);
         expect(mockMainWindow.document.getElementById).toHaveBeenCalledTimes(1);
         expect(
           mockMainWindow.document.getElementById
         ).toHaveBeenCalledWithShallow(FAKE_CANVAS_ID);
+
+        expect(mockMainWindow.console.error).not.toHaveBeenCalled();
+        expect(mockMainWindow.alert).not.toHaveBeenCalled();
       });
 
-      it("should invoke addEventListener twice (see Controls)", () => {
+      it("should invoke addEventListener twice (see Controls constructor)", () => {
+        new Platform(mockMainWindow).run("", mockCallback);
         expect(mockMainWindow.document.addEventListener).toHaveBeenCalledTimes(
           2
         );
+
+        expect(mockMainWindow.console.error).not.toHaveBeenCalled();
+        expect(mockMainWindow.alert).not.toHaveBeenCalled();
       });
 
       it("should invoke getContext once with '2d'", () => {
+        new Platform(mockMainWindow).run("", mockCallback);
         expect(mockElement.getContext).toHaveBeenCalledTimes(1);
         expect(mockElement.getContext).toHaveBeenCalledWithShallow("2d");
+
+        expect(mockMainWindow.console.error).not.toHaveBeenCalled();
+        expect(mockMainWindow.alert).not.toHaveBeenCalled();
       });
 
       it("should invoke the callback once", () => {
+        new Platform(mockMainWindow).run("", mockCallback);
         expect(mockCallback).toHaveBeenCalledTimes(1);
+
+        expect(mockMainWindow.console.error).not.toHaveBeenCalled();
+        expect(mockMainWindow.alert).not.toHaveBeenCalled();
+      });
+
+      describe("with a page hidden event", () => {
+        beforeEach(() => {
+          mockMainWindow.document.hidden = true;
+
+          new Platform(mockMainWindow).run("", mockCallback);
+        });
+
+        it("should invoke suspend once", () => {
+          expect(mockAudioContext.suspend).toHaveBeenCalledTimes(1);
+
+          expect(mockMainWindow.console.error).not.toHaveBeenCalled();
+          expect(mockMainWindow.alert).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("with a page visible event", () => {
+        beforeEach(() => {
+          mockMainWindow.document.hidden = false;
+
+          new Platform(mockMainWindow).run("", mockCallback);
+        });
+
+        it("should invoke resume once", () => {
+          expect(mockAudioContext.resume).toHaveBeenCalledTimes(1);
+
+          expect(mockMainWindow.console.error).not.toHaveBeenCalled();
+          expect(mockMainWindow.alert).not.toHaveBeenCalled();
+        });
       });
     });
   });
