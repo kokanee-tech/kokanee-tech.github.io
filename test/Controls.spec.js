@@ -17,15 +17,6 @@ describe("Controls", () => {
   });
 
   describe("constructor", () => {
-    beforeEach(() => {
-      mockMainWindow.document.addEventListener.mock.implementation = (
-        type,
-        listener
-      ) => {
-        listener();
-      };
-    });
-
     it("should save the main window", () => {
       expect(new Controls(mockMainWindow).mainWindow).toBe(mockMainWindow);
     });
@@ -35,27 +26,26 @@ describe("Controls", () => {
       expect(mockMainWindow.document.addEventListener).toHaveBeenCalledTimes(1);
     });
 
-    describe("with a page visible event", () => {
+    describe("with a visibility change event", () => {
       beforeEach(() => {
-        mockMainWindow.document.hidden = false;
-
-        new Controls(mockMainWindow);
+        mockMainWindow.document.addEventListener.mock.implementation = (
+          type,
+          listener
+        ) => {
+          listener();
+        };
       });
 
-      it("should not invoke navigator.getGamepads", () => {
-        expect(mockMainWindow.navigator.getGamepads).not.toHaveBeenCalled();
-      });
-    });
-
-    describe("with a page hidden event", () => {
-      beforeEach(() => {
+      it("should invoke navigator.getGamepads once if page is hidden", () => {
         mockMainWindow.document.hidden = true;
-
         new Controls(mockMainWindow);
+        expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
       });
 
-      it("should invoke navigator.getGamepads once", () => {
-        expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
+      it("should not invoke navigator.getGamepads if page is visible", () => {
+        mockMainWindow.document.hidden = false;
+        new Controls(mockMainWindow);
+        expect(mockMainWindow.navigator.getGamepads).not.toHaveBeenCalled();
       });
     });
   });
