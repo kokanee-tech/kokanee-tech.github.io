@@ -13,10 +13,13 @@ export default class RotorSoundGenerator {
     const pseudorandom = new Pseudorandom();
     const soundSimulationContext = new SoundSimulationContext(audioContext);
     const pulseOscillator = soundSimulationContext.createPulseOscillator();
-    const grainConvolver = soundSimulationContext.createGrainConvolver(
+    const grainBuffer = soundSimulationContext.createGrainBuffer(
       GRAIN_DURATION,
       (frame, frameCount) =>
         (2 * pseudorandom.nextScalar() - 1) * Scalar.tent(frame / frameCount)
+    );
+    const grainConvolver = soundSimulationContext.createGrainConvolver(
+      grainBuffer
     );
     const gainNode = audioContext.createGain();
 

@@ -3,7 +3,7 @@ export default class SoundSimulationContext {
     this.audioContext = audioContext;
   }
 
-  createGrainConvolver(grainDuration, callback) {
+  createGrainBuffer(grainDuration, callback) {
     const CHANNEL_COUNT = 1;
     const frameCount = grainDuration * this.audioContext.sampleRate;
     const buffer = this.audioContext.createBuffer(
@@ -17,8 +17,12 @@ export default class SoundSimulationContext {
       channelData[frame] = callback(frame, frameCount);
     }
 
+    return buffer;
+  }
+
+  createGrainConvolver(grainBuffer) {
     const convolver = this.audioContext.createConvolver();
-    convolver.buffer = buffer;
+    convolver.buffer = grainBuffer;
     return convolver;
   }
 
