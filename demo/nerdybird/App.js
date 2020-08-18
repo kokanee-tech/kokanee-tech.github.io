@@ -71,6 +71,6 @@ export default class App {
     // Finally we can start the simulation
     //
     const simulation = new Simulation(this.deps);
-    simulation.loadSettings({ maxStepsize: 0.1 }).start();
+    simulation.start();
   }
 }
