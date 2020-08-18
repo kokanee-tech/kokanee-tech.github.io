@@ -5,6 +5,13 @@ import ToyHelicopter from "./ToyHelicopter.js";
 export default class Simulation {
   constructor({ audioContext, controls, timer, visualContext }) {
     this.deps = { audioContext, controls, timer, visualContext };
+
+    this.settings = { maxStepsize: 0.1 };
+  }
+
+  loadSettings(settings) {
+    this.settings = { ...settings };
+    return this;
   }
 
   start() {
@@ -44,8 +51,7 @@ export default class Simulation {
         // suspended. (The browser may suspend animations if the tab is
         // in the background).
         //
-        const MAX_STEPSIZE = 0.1;
-        const stepsize = Math.min(elapsedTime, MAX_STEPSIZE);
+        const stepsize = Math.min(elapsedTime, this.settings.maxStepsize);
 
         time = Scalar.integrate(time, 1, stepsize);
         toyHelicopter.update(throttle, stepsize);

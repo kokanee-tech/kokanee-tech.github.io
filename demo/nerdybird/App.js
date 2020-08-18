@@ -61,7 +61,6 @@ export default class App {
     // Gamepads (at least in Chrome) only support
     // polling
     //
-    const simulation = new Simulation(this.deps);
     timer.forEachAnimationFrame(() => {
       textDisplay.message = controls.getGamepadSample()
         ? ""
@@ -71,6 +70,7 @@ export default class App {
     //
     // Finally we can start the simulation
     //
-    simulation.start();
+    const simulation = new Simulation(this.deps);
+    simulation.loadSettings({ maxStepsize: 0.1 }).start();
   }
 }
