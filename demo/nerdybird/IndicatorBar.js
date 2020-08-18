@@ -2,7 +2,6 @@ export default class IndicatorBar {
   constructor({ visualContext }) {
     this.deps = { visualContext };
 
-    // Default settings
     this.settings = {
       gaugeSize: 10,
     };

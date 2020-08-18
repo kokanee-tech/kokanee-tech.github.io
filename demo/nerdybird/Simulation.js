@@ -16,6 +16,7 @@ export default class Simulation {
 
   start() {
     const { audioContext, controls, timer, visualContext } = this.deps;
+    const { maxStepsize } = this.settings;
     const indicatorBar = new IndicatorBar(this.deps).loadSettings({
       gaugeSize: 20,
     });
@@ -51,7 +52,7 @@ export default class Simulation {
         // suspended. (The browser may suspend animations if the tab is
         // in the background).
         //
-        const stepsize = Math.min(elapsedTime, this.settings.maxStepsize);
+        const stepsize = Math.min(elapsedTime, maxStepsize);
 
         time = Scalar.integrate(time, 1, stepsize);
         toyHelicopter.update(throttle, stepsize);

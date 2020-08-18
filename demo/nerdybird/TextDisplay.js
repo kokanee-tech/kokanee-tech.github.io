@@ -3,7 +3,6 @@ export default class TextDisplay {
     this.deps = { timer, visualContext };
     this.message = "";
 
-    // Default settings
     this.settings = {
       fontFamily: "sans-serif",
       fontSize: "16px",
