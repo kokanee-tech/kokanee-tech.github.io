@@ -12,7 +12,7 @@ export default class TextDisplay {
   }
 
   loadSettings(settings) {
-    this.settings = { ...settings };
+    Object.assign(this.settings, settings);
     return this;
   }
 

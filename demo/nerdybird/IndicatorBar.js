@@ -8,7 +8,7 @@ export default class IndicatorBar {
   }
 
   loadSettings(settings) {
-    this.settings = { ...settings };
+    Object.assign(this.settings, settings);
     return this;
   }
 
