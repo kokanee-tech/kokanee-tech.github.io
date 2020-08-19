@@ -2,12 +2,9 @@ import RotorSoundGenerator from "./RotorSoundGenerator.js";
 import Scalar from "../../src/Scalar.js";
 
 export default class ToyHelicopter {
-  constructor(audioContext, destination) {
+  constructor(audioContext) {
     this.motorSpeed = 0;
-    this.rotorSoundGenerator = new RotorSoundGenerator(
-      audioContext,
-      destination
-    );
+    this.rotorSoundGenerator = new RotorSoundGenerator(audioContext);
 
     this.settings = {
       idleThrottleMotorSpeed: 0.4,
@@ -22,8 +19,8 @@ export default class ToyHelicopter {
     return this;
   }
 
-  start() {
-    this.rotorSoundGenerator.start();
+  async start(audioContext, destination) {
+    await this.rotorSoundGenerator.start(audioContext, destination);
   }
 
   update(throttle, stepsize) {

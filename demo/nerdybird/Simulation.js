@@ -14,19 +14,16 @@ export default class Simulation {
     return this;
   }
 
-  start() {
+  async start() {
     const { audioContext, controls, timer, visualContext } = this.deps;
     const { maxStepsize } = this.settings;
     const indicatorBar = new IndicatorBar(this.deps).loadSettings({
       gaugeSize: 20,
     });
-    const toyHelicopter = new ToyHelicopter(
-      audioContext,
-      audioContext.destination
-    );
+    const toyHelicopter = new ToyHelicopter(audioContext);
 
     let time = 0;
-    toyHelicopter.start();
+    await toyHelicopter.start(audioContext, audioContext.destination);
 
     timer.forEachAnimationFrame((elapsedTime) => {
       visualContext.beginPath();
@@ -38,8 +35,9 @@ export default class Simulation {
       const canvasHeight = visualContext.canvas.height;
       visualContext.save();
       visualContext.translate(canvasWidth / 2, canvasHeight / 2);
-      visualContext.scale(100, -100);
+      //      visualContext.scale(100, -100);
       //helicopter.drawSelf(visualContext);
+      visualContext.scale(0.2, 0.2);
       visualContext.restore();
 
       const gamepadSample = controls.getGamepadSample();
