@@ -2,13 +2,12 @@ import Pseudorandom from "../../src/Pseudorandom.js";
 import Scalar from "../../src/Scalar.js";
 import SoundSimulationContext from "./SoundSimulationContext.js";
 
-const GRAIN_DURATION = 0.05;
-
 export default class RotorSoundGenerator {
   constructor(audioContext, destination) {
     const pseudorandom = new Pseudorandom();
     const soundSimulationContext = new SoundSimulationContext(audioContext);
     const pulseOscillator = soundSimulationContext.createPulseOscillator();
+    const GRAIN_DURATION = 0.05;
     const grainBuffer = soundSimulationContext.createGrainBuffer(
       GRAIN_DURATION,
       (frame, frameCount) =>
