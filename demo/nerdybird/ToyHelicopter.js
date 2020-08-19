@@ -1,11 +1,6 @@
 import RotorSoundGenerator from "./RotorSoundGenerator.js";
 import Scalar from "../../src/Scalar.js";
 
-const IDLE_THROTTLE_MOTOR_SPEED = 0.4;
-const FULL_THROTTLE_MOTOR_SPEED = 1;
-const ZERO_SPEED_RESPONSE_TIME = 0.8;
-const FULL_SPEED_RESPONSE_TIME = 0.03;
-
 export default class ToyHelicopter {
   constructor(audioContext, destination) {
     this.motorSpeed = 0;
@@ -13,6 +8,18 @@ export default class ToyHelicopter {
       audioContext,
       destination
     );
+
+    this.settings = {
+      idleThrottleMotorSpeed: 0.4,
+      fullThrottleMotorSpeed: 1,
+      zeroSpeedResponseTime: 0.8,
+      fullSpeedResponseTime: 0.03,
+    };
+  }
+
+  loadSettings(settings) {
+    Object.assign(this.settings, settings);
+    return this;
   }
 
   start() {
@@ -20,16 +27,25 @@ export default class ToyHelicopter {
   }
 
   update(throttle, stepsize) {
+    const {
+      idleThrottleMotorSpeed,
+      fullThrottleMotorSpeed,
+      zeroSpeedResponseTime,
+      fullSpeedResponseTime,
+    } = this.settings;
+
     const motorSpeedCommand = Scalar.lerp(
-      IDLE_THROTTLE_MOTOR_SPEED,
-      FULL_THROTTLE_MOTOR_SPEED,
+      idleThrottleMotorSpeed,
+      fullThrottleMotorSpeed,
       throttle
     );
+
     const responseTime = Scalar.lerp(
-      ZERO_SPEED_RESPONSE_TIME,
-      FULL_SPEED_RESPONSE_TIME,
+      zeroSpeedResponseTime,
+      fullSpeedResponseTime,
       this.motorSpeed
     );
+
     this.motorSpeed = Scalar.lag(
       this.motorSpeed,
       motorSpeedCommand,
