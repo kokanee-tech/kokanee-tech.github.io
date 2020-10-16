@@ -12,57 +12,51 @@ If you have one and it's paired, press buttons to wake it up.
 Chrome version 83, and macOS 10.11.5 for example)`;
 
 export default class App {
-  constructor({ audioContext, controls, timer, uiElement, visualContext }) {
-    this.deps = { audioContext, controls, timer, uiElement, visualContext };
+  constructor({ deps = { Simulation, TextDisplay }, context }) {
+    this.deps = deps;
+    this.context = context;
   }
 
   async start() {
-    const {
-      audioContext,
-      controls,
-      timer,
-      uiElement,
-      visualContext,
-    } = this.deps;
+    const context = this.context;
 
     //
     // First we set the drawing styles (colours)
     //
-    timer.forEachAnimationFrame(() => {
-      visualContext.strokeStyle = "white";
-      visualContext.fillStyle = "white";
+    context.timer.forEachAnimationFrame(() => {
+      context.visual.strokeStyle = "white";
+      context.visual.fillStyle = "white";
     });
 
     //
     // Now we can start the text display
     //
-    const textDisplay = new TextDisplay(this.deps);
-    textDisplay
-      .loadSettings({
-        fontFamily: "'Courier New', monospace",
-        fontSize: "24px",
-        lineStride: 30,
-        topMargin: 120,
-      })
-      .start();
+    const textDisplay = new this.deps.TextDisplay({
+      context,
+      fontFamily: "'Courier New', monospace",
+      fontSize: "24px",
+      lineStride: 30,
+      topMargin: 120,
+    });
+    textDisplay.start();
 
     //
     // Make sure that the audio context is running
     // (due to browser autoplay policies)
     //
-    if (audioContext.state !== "running") {
+    if (context.audio.state !== "running") {
       textDisplay.message = CLICK_TO_START;
-      await uiElement.userClick();
+      await context.uiElement.userClick();
       textDisplay.message = "";
-      await audioContext.resume();
+      await context.audio.resume();
     }
 
     //
     // Gamepads (at least in Chrome) only support
     // polling
     //
-    timer.forEachAnimationFrame(() => {
-      textDisplay.message = controls.getGamepadSample()
+    context.timer.forEachAnimationFrame(() => {
+      textDisplay.message = context.controls.getGamepadSample()
         ? ""
         : GAMEPAD_NOT_DETECTED;
     });
@@ -70,7 +64,7 @@ export default class App {
     //
     // Finally we can start the simulation
     //
-    const simulation = new Simulation(this.deps);
+    const simulation = new this.deps.Simulation({ context });
     await simulation.start();
   }
 }

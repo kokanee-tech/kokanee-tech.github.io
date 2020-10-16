@@ -1,11 +1,11 @@
 export default class Timer {
-  constructor(mainWindow) {
-    this.mainWindow = mainWindow;
+  constructor({ deps = { window: globalThis } } = {}) {
+    this.window = deps.window;
   }
 
   sleep(millis) {
     return new Promise((resolve) => {
-      this.mainWindow.setTimeout(resolve, millis);
+      this.window.setTimeout(resolve, millis);
     });
   }
 
@@ -17,10 +17,10 @@ export default class Timer {
 
       callback(elapsedTime);
 
-      this.mainWindow.requestAnimationFrame(onFrame);
+      this.window.requestAnimationFrame(onFrame);
     };
 
-    previousTimestamp = this.mainWindow.performance.now();
-    this.mainWindow.requestAnimationFrame(onFrame);
+    previousTimestamp = this.window.performance.now();
+    this.window.requestAnimationFrame(onFrame);
   }
 }

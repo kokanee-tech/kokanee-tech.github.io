@@ -1,7 +1,7 @@
 const EVENT_TYPE_CLICK = "click";
 
 export default class UiElement {
-  constructor(canvasElement) {
+  constructor({ canvasElement }) {
     if (canvasElement === null) {
       throw new Error("Canvas element is null. Check your DOM query.");
     }

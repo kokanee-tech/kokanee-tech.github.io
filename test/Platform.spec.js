@@ -3,16 +3,11 @@ import Mock from "../src/specish/Mock.js";
 import Platform from "../src/Platform.js";
 
 describe("Platform", () => {
-  describe("constructor", () => {
-    it("should save the main window", () => {
-      const mainWindow = {};
-      expect(new Platform(mainWindow).mainWindow).toBe(mainWindow);
-    });
-  });
-
   describe("run", () => {
-    let mockMainWindow;
     let mockAudioContext;
+    let mockDocument;
+    let mockWindow;
+    let mockTimer;
     let platform;
 
     beforeEach(() => {
@@ -21,7 +16,12 @@ describe("Platform", () => {
         resume: Mock.fn().mockName("resume"),
       };
 
-      mockMainWindow = {
+      mockDocument = {
+        getElementById: Mock.fn().mockName("document.getElementById"),
+        addEventListener: Mock.fn().mockName("addEventListener"),
+      };
+
+      mockWindow = {
         alert: Mock.fn().mockName("alert"),
         AudioContext: function () {
           return mockAudioContext;
@@ -29,43 +29,32 @@ describe("Platform", () => {
         console: {
           error: Mock.fn().mockName("console.error"),
         },
-        document: {
-          getElementById: Mock.fn().mockName("document.getElementById"),
-          addEventListener: Mock.fn().mockName("addEventListener"),
-        },
-        navigator: {
-          getGamepads: () => {}, // see Controls constructor
-        },
-        performance: {
-          now: () => {},
-        },
-        requestAnimationFrame: () => {},
+        document: mockDocument,
       };
 
-      platform = new Platform(mockMainWindow);
-    });
+      mockTimer = {
+        forEachAnimationFrame: Mock.fn().mockName("forEachAnimationFrame"),
+      };
 
-    describe("with no element found matching the specified canvas ID", () => {
-      beforeEach(() => {
-        mockMainWindow.document.getElementById.mock.implementation = () => null;
+      const descriptor = {
+        deps: {
+          Controls: function () {},
+          Timer: function () {
+            return mockTimer;
+          },
+          UiElement: function () {},
+          window: mockWindow,
+        },
+      };
 
-        platform.run();
-      });
-
-      it("should invoke console.error once", () => {
-        expect(mockMainWindow.console.error).toHaveBeenCalledTimes(1);
-      });
-
-      it("should invoke alert once", () => {
-        expect(mockMainWindow.alert).toHaveBeenCalledTimes(1);
-      });
+      platform = new Platform(descriptor);
     });
 
     describe("with an exception thrown in the callback", () => {
       let mockCallback;
 
       beforeEach(() => {
-        mockMainWindow.document.getElementById.mock.implementation = () => ({
+        mockDocument.getElementById.mock.implementation = () => ({
           getContext: () => {},
         });
 
@@ -77,18 +66,18 @@ describe("Platform", () => {
       });
 
       it("should invoke console.error once", () => {
-        expect(mockMainWindow.console.error).toHaveBeenCalledTimes(1);
+        expect(mockWindow.console.error).toHaveBeenCalledTimes(1);
       });
 
       it("should invoke alert once", () => {
-        expect(mockMainWindow.alert).toHaveBeenCalledTimes(1);
+        expect(mockWindow.alert).toHaveBeenCalledTimes(1);
       });
     });
 
     describe("with no exception thrown", () => {
       const expectNoError = () => {
-        expect(mockMainWindow.console.error).not.toHaveBeenCalled();
-        expect(mockMainWindow.alert).not.toHaveBeenCalled();
+        expect(mockWindow.console.error).not.toHaveBeenCalled();
+        expect(mockWindow.alert).not.toHaveBeenCalled();
       };
       let mockCallback;
       let mockElement;
@@ -98,8 +87,7 @@ describe("Platform", () => {
           getContext: Mock.fn().mockName("getContext"),
         };
 
-        mockMainWindow.document.getElementById.mock.implementation = () =>
-          mockElement;
+        mockDocument.getElementById.mock.implementation = () => mockElement;
 
         mockCallback = Mock.fn().mockName("callback");
       });
@@ -109,19 +97,24 @@ describe("Platform", () => {
         platform.run(FAKE_CANVAS_ID, mockCallback);
 
         expectNoError();
-        expect(mockMainWindow.document.getElementById).toHaveBeenCalledTimes(1);
-        expect(
-          mockMainWindow.document.getElementById
-        ).toHaveBeenCalledWithShallow(FAKE_CANVAS_ID);
+        expect(mockDocument.getElementById).toHaveBeenCalledTimes(1);
+        expect(mockDocument.getElementById).toHaveBeenCalledWithShallow(
+          FAKE_CANVAS_ID
+        );
       });
 
-      it("should invoke addEventListener twice (see Controls constructor)", () => {
+      it("should invoke forEachAnimationFrame once", () => {
         platform.run("", mockCallback);
 
         expectNoError();
-        expect(mockMainWindow.document.addEventListener).toHaveBeenCalledTimes(
-          2
-        );
+        expect(mockTimer.forEachAnimationFrame).toHaveBeenCalledTimes(1);
+      });
+
+      it("should invoke addEventListener once", () => {
+        platform.run("", mockCallback);
+
+        expectNoError();
+        expect(mockDocument.addEventListener).toHaveBeenCalledTimes(1);
       });
 
       it("should invoke getContext once with '2d'", () => {
@@ -141,7 +134,7 @@ describe("Platform", () => {
 
       describe("with a visibility change event", () => {
         beforeEach(() => {
-          mockMainWindow.document.addEventListener.mock.implementation = (
+          mockDocument.addEventListener.mock.implementation = (
             type,
             listener
           ) => {
@@ -150,7 +143,7 @@ describe("Platform", () => {
         });
 
         it("should invoke suspend once if page is hidden", () => {
-          mockMainWindow.document.hidden = true;
+          mockDocument.hidden = true;
           platform.run("", mockCallback);
 
           expectNoError();
@@ -159,7 +152,7 @@ describe("Platform", () => {
         });
 
         it("should invoke resume once if page is visible", () => {
-          mockMainWindow.document.hidden = false;
+          mockDocument.hidden = false;
           platform.run("", mockCallback);
 
           expectNoError();

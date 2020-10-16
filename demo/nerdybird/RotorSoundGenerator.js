@@ -2,32 +2,34 @@ import Scalar from "../../src/Scalar.js";
 import Sound from "./Sound.js";
 
 export default class RotorSoundGenerator {
-  constructor(audioContext) {
-    this.pulseOscillator = Sound.createPulseOscillator(audioContext);
-    this.gainNode = audioContext.createGain();
-
-    this.settings = {
-      zeroSpeedFrequency: 1,
-      fullSpeedFrequency: 15,
-      zeroSpeedGain: 0,
-      fullSpeedGain: 1,
-    };
-  }
-
-  loadSettings(settings) {
-    Object.assign(this.settings, settings);
-    return this;
+  constructor({
+    deps = { Scalar, Sound, window: globalThis },
+    context,
+    zeroSpeed = {
+      frequency: 1,
+      gain: 0,
+    },
+    fullSpeed = {
+      frequency: 15,
+      gain: 1,
+    },
+  }) {
+    this.deps = deps;
+    this.zeroSpeed = zeroSpeed;
+    this.fullSpeed = fullSpeed;
+    this.pulseOscillator = deps.Sound.createPulseOscillator(context.audio);
+    this.gainNode = context.audio.createGain();
   }
 
   async renderGrain(sampleRate) {
     const DURATION = 0.05;
-    const offlineAudioContext = new OfflineAudioContext({
+    const offlineAudioContext = new this.deps.window.OfflineAudioContext({
       numberOfChannels: 1,
       length: DURATION * sampleRate,
       sampleRate,
     });
     const bufferSource = offlineAudioContext.createBufferSource();
-    bufferSource.buffer = Sound.createNoiseBuffer(
+    bufferSource.buffer = this.deps.Sound.createNoiseBuffer(
       offlineAudioContext,
       DURATION
     );
@@ -54,22 +56,15 @@ export default class RotorSoundGenerator {
   }
 
   update(motorSpeed) {
-    const {
-      zeroSpeedFrequency,
-      fullSpeedFrequency,
-      zeroSpeedGain,
-      fullSpeedGain,
-    } = this.settings;
-
-    this.pulseOscillator.frequency.value = Scalar.lerp(
-      zeroSpeedFrequency,
-      fullSpeedFrequency,
+    this.pulseOscillator.frequency.value = this.deps.Scalar.lerp(
+      this.zeroSpeed.frequency,
+      this.fullSpeed.frequency,
       motorSpeed
     );
 
-    this.gainNode.gain.value = Scalar.lerp(
-      zeroSpeedGain,
-      fullSpeedGain,
+    this.gainNode.gain.value = this.deps.Scalar.lerp(
+      this.zeroSpeed.gain,
+      this.fullSpeed.gain,
       motorSpeed
     );
   }

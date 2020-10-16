@@ -5,12 +5,14 @@ import UiElement from "../src/UiElement.js";
 describe("UiElement", () => {
   describe("constructor", () => {
     it("should save the canvas element", () => {
-      const canvasElement = {};
-      expect(new UiElement(canvasElement).canvasElement).toBe(canvasElement);
+      const descriptor = { canvasElement: {} };
+      expect(new UiElement(descriptor).canvasElement).toBe(
+        descriptor.canvasElement
+      );
     });
 
     it("should throw for a null element", () => {
-      expect(() => new UiElement(null)).toThrowSomething();
+      expect(() => new UiElement({ canvasElement: null })).toThrowSomething();
     });
   });
 
@@ -18,65 +20,75 @@ describe("UiElement", () => {
     const WINDOW_INNER_WIDTH = 7;
     const WINDOW_INNER_HEIGHT = 3;
 
-    let mockCanvasElement;
+    let descriptor;
 
     beforeEach(() => {
-      mockCanvasElement = {};
-      new UiElement(mockCanvasElement).autoSize({
+      descriptor = { canvasElement: {} };
+      new UiElement(descriptor).autoSize({
         innerWidth: WINDOW_INNER_WIDTH,
         innerHeight: WINDOW_INNER_HEIGHT,
       });
     });
 
     it("should set canvas width to window inner width", () => {
-      expect(mockCanvasElement.width).toBe(WINDOW_INNER_WIDTH);
+      expect(descriptor.canvasElement.width).toBe(WINDOW_INNER_WIDTH);
     });
 
     it("should set canvas height to window inner height", () => {
-      expect(mockCanvasElement.height).toBe(WINDOW_INNER_HEIGHT);
+      expect(descriptor.canvasElement.height).toBe(WINDOW_INNER_HEIGHT);
     });
   });
 
   describe("userClick", () => {
-    let mockCanvasElement;
+    let descriptor;
 
     beforeEach(() => {
-      mockCanvasElement = {
-        removeEventListener: Mock.fn().mockName("removeEventListener"),
-        addEventListener: Mock.fn().mockName("addEventListener"),
+      descriptor = {
+        canvasElement: {
+          removeEventListener: Mock.fn().mockName("removeEventListener"),
+          addEventListener: Mock.fn().mockName("addEventListener"),
+        },
       };
     });
 
     describe("without click event", () => {
       beforeEach(() => {
-        new UiElement(mockCanvasElement).userClick();
+        new UiElement(descriptor).userClick();
       });
 
       it("should invoke addEventListener once", () => {
-        expect(mockCanvasElement.addEventListener).toHaveBeenCalledTimes(1);
+        expect(descriptor.canvasElement.addEventListener).toHaveBeenCalledTimes(
+          1
+        );
       });
 
       it("should not invoke removeEventListener", () => {
-        expect(mockCanvasElement.removeEventListener).not.toHaveBeenCalled();
+        expect(
+          descriptor.canvasElement.removeEventListener
+        ).not.toHaveBeenCalled();
       });
     });
 
     describe("with click event", () => {
       beforeEach(() => {
-        mockCanvasElement.addEventListener.mock.implementation = (
+        descriptor.canvasElement.addEventListener.mock.implementation = (
           type,
           listener
         ) => listener();
 
-        new UiElement(mockCanvasElement).userClick();
+        new UiElement(descriptor).userClick();
       });
 
       it("should invoke addEventListener once", () => {
-        expect(mockCanvasElement.addEventListener).toHaveBeenCalledTimes(1);
+        expect(descriptor.canvasElement.addEventListener).toHaveBeenCalledTimes(
+          1
+        );
       });
 
       it("should invoke removeEventListener once", () => {
-        expect(mockCanvasElement.removeEventListener).toHaveBeenCalledTimes(1);
+        expect(
+          descriptor.canvasElement.removeEventListener
+        ).toHaveBeenCalledTimes(1);
       });
     });
   });

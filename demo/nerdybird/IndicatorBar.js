@@ -1,29 +1,20 @@
 export default class IndicatorBar {
-  constructor({ visualContext }) {
-    this.deps = { visualContext };
-
-    this.settings = {
-      gaugeSize: 10,
-    };
-  }
-
-  loadSettings(settings) {
-    Object.assign(this.settings, settings);
-    return this;
+  constructor({ context, gaugeSize = 10 }) {
+    this.context = context;
+    this.gaugeSize = gaugeSize;
   }
 
   drawGauge(index, callback) {
-    const { visualContext } = this.deps;
-    const { gaugeSize } = this.settings;
+    const context = this.context;
 
-    visualContext.save();
-    visualContext.translate(
-      visualContext.canvas.width - (index + 0.5) * gaugeSize,
-      0.5 * gaugeSize
+    context.visual.save();
+    context.visual.translate(
+      context.visual.canvas.width - (index + 0.5) * this.gaugeSize,
+      0.5 * this.gaugeSize
     );
-    visualContext.scale(0.4 * gaugeSize, 0.4 * gaugeSize);
-    callback(visualContext);
-    visualContext.restore();
+    context.visual.scale(0.4 * this.gaugeSize, 0.4 * this.gaugeSize);
+    callback(context.visual);
+    context.visual.restore();
   }
 
   drawAngularGauge(index, angle) {

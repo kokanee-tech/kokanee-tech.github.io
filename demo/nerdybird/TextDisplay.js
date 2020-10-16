@@ -1,32 +1,33 @@
 export default class TextDisplay {
-  constructor({ timer, visualContext }) {
-    this.deps = { timer, visualContext };
+  constructor({
+    context,
+    fontFamily = "sans-serif",
+    fontSize = "16px",
+    lineStride = 20,
+    topMargin = 80,
+  }) {
+    this.context = context;
+    this.fontFamily = fontFamily;
+    this.fontSize = fontSize;
+    this.lineStride = lineStride;
+    this.topMargin = topMargin;
     this.message = "";
-
-    this.settings = {
-      fontFamily: "sans-serif",
-      fontSize: "16px",
-      lineStride: 20,
-      topMargin: 80,
-    };
-  }
-
-  loadSettings(settings) {
-    Object.assign(this.settings, settings);
-    return this;
   }
 
   start() {
-    const { timer, visualContext } = this.deps;
-    const { fontFamily, fontSize, lineStride, topMargin } = this.settings;
+    const context = this.context;
 
-    timer.forEachAnimationFrame(() => {
-      visualContext.font = `${fontSize} ${fontFamily}`;
-      visualContext.textAlign = "center";
+    context.timer.forEachAnimationFrame(() => {
+      context.visual.font = `${this.fontSize} ${this.fontFamily}`;
+      context.visual.textAlign = "center";
 
-      const xCenter = visualContext.canvas.width / 2;
+      const xCenter = context.visual.canvas.width / 2;
       this.message.split("\n").forEach((line, index) => {
-        visualContext.fillText(line, xCenter, index * lineStride + topMargin);
+        context.visual.fillText(
+          line,
+          xCenter,
+          index * this.lineStride + this.topMargin
+        );
       });
     });
   }

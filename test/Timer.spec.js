@@ -3,26 +3,25 @@ import Mock from "../src/specish/Mock.js";
 import Timer from "../src/Timer.js";
 
 describe("Timer", () => {
-  describe("constructor", () => {
-    it("should save the main window", () => {
-      const mainWindow = {};
-      expect(new Timer(mainWindow).mainWindow).toBe(mainWindow);
-    });
-  });
-
   describe("sleep", () => {
-    let mockMainWindow;
+    let mockWindow;
 
     beforeEach(() => {
-      mockMainWindow = {
+      mockWindow = {
         setTimeout: Mock.fn().mockName("setTimeout"),
       };
 
-      new Timer(mockMainWindow).sleep();
+      const descriptor = {
+        deps: {
+          window: mockWindow,
+        },
+      };
+
+      new Timer(descriptor).sleep();
     });
 
     it("should invoke setTimeout once", () => {
-      expect(mockMainWindow.setTimeout).toHaveBeenCalledTimes(1);
+      expect(mockWindow.setTimeout).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -34,11 +33,12 @@ describe("Timer", () => {
     // Simple timestamp (in milliseconds)
     const getTimestamp = (time) => time * 1000;
 
-    let mockMainWindow;
+    let mockWindow;
+    let descriptor;
     let mockCallback;
 
     beforeEach(() => {
-      mockMainWindow = {
+      mockWindow = {
         performance: {
           now: Mock.fn(() => getTimestamp(TIME_NOW)).mockName(
             "performance.now"
@@ -47,20 +47,26 @@ describe("Timer", () => {
         requestAnimationFrame: Mock.fn().mockName("requestAnimationFrame"),
       };
 
+      descriptor = {
+        deps: {
+          window: mockWindow,
+        },
+      };
+
       mockCallback = Mock.fn().mockName("callback");
     });
 
     describe("without frame event", () => {
       beforeEach(() => {
-        new Timer(mockMainWindow).forEachAnimationFrame(mockCallback);
+        new Timer(descriptor).forEachAnimationFrame(mockCallback);
       });
 
       it("should invoke performance.now once", () => {
-        expect(mockMainWindow.performance.now).toHaveBeenCalledTimes(1);
+        expect(mockWindow.performance.now).toHaveBeenCalledTimes(1);
       });
 
       it("should invoke requestAnimationFrame once", () => {
-        expect(mockMainWindow.requestAnimationFrame).toHaveBeenCalledTimes(1);
+        expect(mockWindow.requestAnimationFrame).toHaveBeenCalledTimes(1);
       });
 
       it("should not invoke the callback", () => {
@@ -70,23 +76,23 @@ describe("Timer", () => {
 
     describe("with frame event", () => {
       beforeEach(() => {
-        mockMainWindow.requestAnimationFrame.mock.implementation = (onFrame) =>
+        mockWindow.requestAnimationFrame.mock.implementation = (onFrame) =>
           onFrame(getTimestamp(TIME_FRAME_EVENT));
 
         mockCallback.mock.implementation = () => {
           // Reset the mock rAF implementation to avoid an endless loop
-          mockMainWindow.requestAnimationFrame.mock.implementation = () => {};
+          mockWindow.requestAnimationFrame.mock.implementation = () => {};
         };
 
-        new Timer(mockMainWindow).forEachAnimationFrame(mockCallback);
+        new Timer(descriptor).forEachAnimationFrame(mockCallback);
       });
 
       it("should invoke performance.now once", () => {
-        expect(mockMainWindow.performance.now).toHaveBeenCalledTimes(1);
+        expect(mockWindow.performance.now).toHaveBeenCalledTimes(1);
       });
 
       it("should invoke requestAnimationFrame twice", () => {
-        expect(mockMainWindow.requestAnimationFrame).toHaveBeenCalledTimes(2);
+        expect(mockWindow.requestAnimationFrame).toHaveBeenCalledTimes(2);
       });
 
       it("should invoke the callback once with the elapsed time", () => {

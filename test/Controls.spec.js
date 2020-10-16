@@ -3,32 +3,38 @@ import Mock from "../src/specish/Mock.js";
 import Controls from "../src/Controls.js";
 
 describe("Controls", () => {
-  let mockMainWindow;
+  let mockDocument;
+  let mockNavigator;
+  let descriptor;
 
   beforeEach(() => {
-    mockMainWindow = {
-      navigator: {
-        getGamepads: Mock.fn().mockName("navigator.getGamepads"),
-      },
-      document: {
-        addEventListener: Mock.fn().mockName("addEventListener"),
+    mockDocument = {
+      addEventListener: Mock.fn().mockName("addEventListener"),
+    };
+
+    mockNavigator = {
+      getGamepads: Mock.fn().mockName("navigator.getGamepads"),
+    };
+
+    descriptor = {
+      deps: {
+        window: {
+          document: mockDocument,
+          navigator: mockNavigator,
+        },
       },
     };
   });
 
   describe("constructor", () => {
-    it("should save the main window", () => {
-      expect(new Controls(mockMainWindow).mainWindow).toBe(mockMainWindow);
-    });
-
     it("should invoke addEventListener once", () => {
-      new Controls(mockMainWindow);
-      expect(mockMainWindow.document.addEventListener).toHaveBeenCalledTimes(1);
+      new Controls(descriptor);
+      expect(mockDocument.addEventListener).toHaveBeenCalledTimes(1);
     });
 
     describe("with a visibility change event", () => {
       beforeEach(() => {
-        mockMainWindow.document.addEventListener.mock.implementation = (
+        mockDocument.addEventListener.mock.implementation = (
           type,
           listener
         ) => {
@@ -37,15 +43,15 @@ describe("Controls", () => {
       });
 
       it("should invoke navigator.getGamepads once if page is hidden", () => {
-        mockMainWindow.document.hidden = true;
-        new Controls(mockMainWindow);
-        expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
+        mockDocument.hidden = true;
+        new Controls(descriptor);
+        expect(mockNavigator.getGamepads).toHaveBeenCalledTimes(1);
       });
 
       it("should not invoke navigator.getGamepads if page is visible", () => {
-        mockMainWindow.document.hidden = false;
-        new Controls(mockMainWindow);
-        expect(mockMainWindow.navigator.getGamepads).not.toHaveBeenCalled();
+        mockDocument.hidden = false;
+        new Controls(descriptor);
+        expect(mockNavigator.getGamepads).not.toHaveBeenCalled();
       });
     });
   });
@@ -53,32 +59,32 @@ describe("Controls", () => {
   describe("getGamepadSample", () => {
     describe("with an empty array", () => {
       beforeEach(() => {
-        mockMainWindow.navigator.getGamepads.mock.implementation = () => [];
+        mockNavigator.getGamepads.mock.implementation = () => [];
       });
 
       it("should invoke navigator.getGamepads once", () => {
-        new Controls(mockMainWindow).getGamepadSample();
-        expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
+        new Controls(descriptor).getGamepadSample();
+        expect(mockNavigator.getGamepads).toHaveBeenCalledTimes(1);
       });
 
       it("should return null", () => {
-        const result = new Controls(mockMainWindow).getGamepadSample();
+        const result = new Controls(descriptor).getGamepadSample();
         expect(result).toBe(null);
       });
     });
 
     describe("with an array containing null", () => {
       beforeEach(() => {
-        mockMainWindow.navigator.getGamepads.mock.implementation = () => [null];
+        mockNavigator.getGamepads.mock.implementation = () => [null];
       });
 
       it("should invoke navigator.getGamepads once", () => {
-        new Controls(mockMainWindow).getGamepadSample();
-        expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
+        new Controls(descriptor).getGamepadSample();
+        expect(mockNavigator.getGamepads).toHaveBeenCalledTimes(1);
       });
 
       it("should return null", () => {
-        const result = new Controls(mockMainWindow).getGamepadSample();
+        const result = new Controls(descriptor).getGamepadSample();
         expect(result).toBe(null);
       });
     });
@@ -87,18 +93,16 @@ describe("Controls", () => {
       const gamepadSample = {};
 
       beforeEach(() => {
-        mockMainWindow.navigator.getGamepads.mock.implementation = () => [
-          gamepadSample,
-        ];
+        mockNavigator.getGamepads.mock.implementation = () => [gamepadSample];
       });
 
       it("should invoke navigator.getGamepads once", () => {
-        new Controls(mockMainWindow).getGamepadSample();
-        expect(mockMainWindow.navigator.getGamepads).toHaveBeenCalledTimes(1);
+        new Controls(descriptor).getGamepadSample();
+        expect(mockNavigator.getGamepads).toHaveBeenCalledTimes(1);
       });
 
       it("should return the gamepad sample", () => {
-        const result = new Controls(mockMainWindow).getGamepadSample();
+        const result = new Controls(descriptor).getGamepadSample();
         expect(result).toBe(gamepadSample);
       });
     });
