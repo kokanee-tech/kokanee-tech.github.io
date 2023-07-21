@@ -1,9 +1,9 @@
-### 1) Turn off all appliances
+### 1) Stove: OFF
 
-### 2) Collect garbage and load car
+### 2) Oven: OFF
 
-### 3) Close windows and sliding doors (upstairs too)
+### 3) Collect garbage
 
-### 4) Turn lights off
+### 4) Lights off, close windows and sliding doors (upstairs too)
 
 ### 5) Lock main entrance
