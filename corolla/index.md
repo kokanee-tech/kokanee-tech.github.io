@@ -1,31 +1,28 @@
-# ARRIVAL
+# 2005 Toyota Corolla, silver
 
-### 1) Valve: OPEN
+- Less than 200,000km
+- All-weather tires
+- A/C, AM/FM/CD
+- Well-maintained, Krown rust protection applied regularly
+- Some scuffing on rear fender (shown below)
+- Some rust on door sills (shown below)
+- Missing one wheel cover
 
-![arrival-01][arrival-01]
+![Corolla-side][Corolla-side]
 
-### 2) Wait: Fifteen minutes
+![Corolla-tires][Corolla-tires]
 
-![arrival-02][arrival-02]
+![Corolla-dash][Corolla-dash]
 
-### 3) "Tank" Circuit Breaker: ON
+![Corolla-fender][Corolla-fender]
 
-![arrival-03][arrival-03]
+![Corolla-driver-step][Corolla-driver-step]
 
----
+![Corolla-passenger-step][Corolla-passenger-step]
 
-# DEPARTURE
-
-### 1) "Tank" Circuit Breaker: OFF
-
-![departure-01][departure-01]
-
-### 2) Valve: CLOSED
-
-![departure-02][departure-02]
-
-[arrival-01]: ./arrival-01.jpeg "Valve: OPEN"
-[arrival-02]: ./arrival-02.png "Wait: 15 minutes"
-[arrival-03]: ./arrival-03.jpeg "Tank Circuit Breaker: ON"
-[departure-01]: ./departure-01.jpeg "Tank Circuit Breaker: OFF"
-[departure-02]: ./departure-02.jpeg "Valve: CLOSED"
+[Corolla-side]: ./Corolla-side.jpg "Side view"
+[Corolla-tires]: ./Corolla-tires.jpg "Tires"
+[Corolla-dash]: ./Corolla-dash.jpg "Dash"
+[Corolla-fender]: ./Corolla-fender.jpg "Fender"
+[Corolla-driver-step]: ./Corolla-driver-step.jpg "Driver step"
+[Corolla-passenger-step]: ./Corolla-passenger-step.jpg "Passenger step"
