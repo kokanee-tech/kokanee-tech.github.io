@@ -1,3 +1,5 @@
-### [NerdyBird](demo/nerdybird)
+Sorry, nothing here. Go back.
 
-Hone your [toy helicopter](https://en.wikipedia.org/wiki/VertiBird) flying skills.
+<!-- ### [NerdyBird](demo/nerdybird) -->
+
+<!-- Hone your [toy helicopter](https://en.wikipedia.org/wiki/VertiBird) flying skills. -->
